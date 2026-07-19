@@ -1,0 +1,11 @@
+{
+  "name": "pantrycloud-worker",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "hono": "^4.0.0"
+  },
+  "scripts": {
+    "deploy": "wrangler deploy"
+  }
+}

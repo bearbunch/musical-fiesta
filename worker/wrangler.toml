@@ -1,0 +1,11 @@
+name = "pantrycloud-api"
+
+main = "src/index.js"
+
+compatibility_date = "2026-07-19"
+
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pantrycloud"
+database_id = "1bbabc5f-7f2a-4e63-97ad-71d1e5175628"
