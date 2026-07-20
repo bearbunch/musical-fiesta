@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 
 const app = new Hono();
 
+
 app.use(
   "*",
   cors({
@@ -97,7 +98,53 @@ app.put("/settings/:key", async (c)=>{
 
 
 // ===============================
-// ITEMS
+// CATEGORIES
+// ===============================
+
+
+app.get("/categories", async (c)=>{
+
+    const db = c.env.DB;
+
+
+    const result = await db
+        .prepare(
+            "SELECT * FROM categories ORDER BY name"
+        )
+        .all();
+
+
+    return c.json(result.results);
+
+});
+
+
+
+// ===============================
+// LOCATIONS
+// ===============================
+
+
+app.get("/locations", async (c)=>{
+
+    const db = c.env.DB;
+
+
+    const result = await db
+        .prepare(
+            "SELECT * FROM locations ORDER BY name"
+        )
+        .all();
+
+
+    return c.json(result.results);
+
+});
+
+
+
+// ===============================
+// ITEMS LIST
 // ===============================
 
 
@@ -106,145 +153,240 @@ app.get("/items", async (c)=>{
     const db = c.env.DB;
 
 
-    const items = await db.prepare(`
+    const result = await db.prepare(`
         SELECT
+
             items.*,
+
             categories.name AS category,
+
             locations.name AS location
+
         FROM items
+
+
         LEFT JOIN categories
+
             ON categories.id = items.category_id
+
+
         LEFT JOIN locations
+
             ON locations.id = items.location_id
+
+
         ORDER BY items.created_at DESC
+
     `)
     .all();
 
 
-    return c.json(items.results);
+
+    return c.json(result.results);
 
 });
 
+
+
+
+// ===============================
+// ADD ITEM
+// ===============================
 
 
 app.post("/items", async (c)=>{
 
+
     try {
+
 
         const db = c.env.DB;
 
-        const item = await c.req.json();
+
+        const item =
+            await c.req.json();
+
 
 
         await db.prepare(`
+
             INSERT INTO items
+
             (
+
                 name,
+
                 category_id,
+
                 location_id,
+
                 quantity,
+
                 unit,
+
                 minimum_quantity,
+
                 notes,
+
                 expiry_date
+
             )
-            VALUES(?,?,?,?,?,?,?,?)
+
+
+            VALUES
+
+            (?,?,?,?,?,?,?,?)
+
         `)
         .bind(
+
             item.name,
+
             item.category_id ?? null,
+
             item.location_id ?? null,
+
             item.quantity ?? 0,
+
             item.unit ?? "unit",
+
             item.minimum_quantity ?? 0,
+
             item.notes ?? "",
+
             item.expiry_date ?? null
+
         )
         .run();
+
 
 
         await db.prepare(`
+
             INSERT INTO activity_log
+
             (
+
                 action,
+
                 details
+
             )
-            VALUES(?,?)
+
+
+            VALUES (?,?)
+
         `)
         .bind(
+
             "Added item",
+
             item.name
+
         )
         .run();
 
 
+
         return c.json({
+
             success:true
+
         });
 
 
-    } catch(error) {
+
+    } catch(error){
 
 
         return c.json({
 
             success:false,
+
             error:error.message
 
         },500);
 
+
     }
+
 
 });
 
 
+
+
 // ===============================
-// REMOVE ONE QUANTITY
+// REMOVE ONE ITEM QUANTITY
 // ===============================
 
 
-app.put("/items/:id", async (c)=>{
+app.put("/items/:id", async(c)=>{
+
 
     try {
 
+
         const db = c.env.DB;
 
-        const id = c.req.param("id");
 
-        const body = await c.req.json();
+        const id =
+            c.req.param("id");
+
+
+        const body =
+            await c.req.json();
+
 
 
         await db.prepare(`
+
             UPDATE items
-            SET quantity = ?,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = ?
+
+            SET quantity=?,
+
+                updated_at=CURRENT_TIMESTAMP
+
+            WHERE id=?
+
         `)
         .bind(
+
             body.quantity,
+
             id
+
         )
         .run();
 
 
+
         return c.json({
+
             success:true
+
         });
 
 
-    } catch(error) {
+
+    } catch(error){
 
 
         return c.json({
 
             success:false,
+
             error:error.message
 
         },500);
 
+
     }
 
+
 });
+
+
 
 
 // ===============================
@@ -254,23 +396,37 @@ app.put("/items/:id", async (c)=>{
 
 app.delete("/items/:id", async(c)=>{
 
+
     const db = c.env.DB;
 
 
+
     await db.prepare(
+
         "DELETE FROM items WHERE id=?"
+
     )
+
     .bind(
+
         c.req.param("id")
+
     )
+
     .run();
 
 
+
     return c.json({
+
         deleted:true
+
     });
 
+
 });
+
+
 
 
 // ===============================
@@ -278,40 +434,52 @@ app.delete("/items/:id", async(c)=>{
 // ===============================
 
 
-app.get("/debug", async (c)=>{
+app.get("/debug", async(c)=>{
+
 
     try {
+
 
         const db = c.env.DB;
 
 
-        const result = await db.prepare(
-            "SELECT COUNT(*) AS total FROM items"
-        )
-        .first();
+        const result =
+            await db.prepare(
+
+                "SELECT COUNT(*) AS total FROM items"
+
+            )
+            .first();
+
 
 
         return c.json({
 
             success:true,
+
             result
 
         });
 
 
-    } catch(error) {
+
+    } catch(error){
 
 
         return c.json({
 
             success:false,
+
             error:error.message
 
         },500);
 
+
     }
 
+
 });
+
 
 
 export default app;

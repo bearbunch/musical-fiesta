@@ -3,31 +3,38 @@
 // ===============================
 
 
-const API = "https://musical-fiesta.woodwardjake13.workers.dev";
+const API =
+"https://musical-fiesta.woodwardjake13.workers.dev";
+
 
 let items = [];
 
+let categories = [];
+
+let locations = [];
+
 
 // ===============================
-// Load Dashboard
+// Dashboard
 // ===============================
+
 
 async function loadDashboard(){
 
     try {
 
-        const response = await fetch(
-            API + "/items"
-        );
+        const response =
+            await fetch(API + "/items");
 
-        const data = await response.json();
 
-        let total = data.length;
+        const data =
+            await response.json();
+
 
         let lowStock = 0;
 
 
-        data.forEach(item => {
+        data.forEach(item=>{
 
             if(
                 item.minimum_quantity > 0 &&
@@ -41,16 +48,17 @@ async function loadDashboard(){
         });
 
 
+
         document.getElementById("stats").innerHTML = `
 
             <div>
-            Total Items:
-            <b>${total}</b>
+                Total Items:
+                <b>${data.length}</b>
             </div>
 
             <div>
-            Low Stock:
-            <b>${lowStock}</b>
+                Low Stock:
+                <b>${lowStock}</b>
             </div>
 
         `;
@@ -61,8 +69,60 @@ async function loadDashboard(){
 
         console.log(error);
 
-        document.getElementById("stats").innerHTML =
-        "Unable to load dashboard";
+    }
+
+}
+
+
+
+// ===============================
+// Categories
+// ===============================
+
+
+async function loadCategories(){
+
+    try {
+
+        const response =
+            await fetch(API + "/categories");
+
+
+        categories =
+            await response.json();
+
+
+
+        const select =
+            document.getElementById("category");
+
+
+        select.innerHTML =
+        `
+        <option value="">
+        No category
+        </option>
+        `;
+
+
+
+        categories.forEach(category=>{
+
+            select.innerHTML += `
+
+            <option value="${category.id}">
+                ${category.name}
+            </option>
+
+            `;
+
+        });
+
+
+    }
+    catch(error){
+
+        console.log(error);
 
     }
 
@@ -71,12 +131,69 @@ async function loadDashboard(){
 
 
 // ===============================
-// Load Inventory
+// Locations
 // ===============================
+
+
+async function loadLocations(){
+
+    try {
+
+        const response =
+            await fetch(API + "/locations");
+
+
+        locations =
+            await response.json();
+
+
+
+        const select =
+            document.getElementById("location");
+
+
+        select.innerHTML =
+        `
+        <option value="">
+        No location
+        </option>
+        `;
+
+
+
+        locations.forEach(location=>{
+
+            select.innerHTML += `
+
+            <option value="${location.id}">
+                ${location.name}
+            </option>
+
+            `;
+
+        });
+
+
+    }
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+
+// ===============================
+// Load Items
+// ===============================
+
 
 async function loadItems(){
 
     try {
+
 
         const response =
             await fetch(API + "/items");
@@ -86,7 +203,9 @@ async function loadItems(){
             await response.json();
 
 
+
         let html = "";
+
 
 
         if(items.length === 0){
@@ -97,50 +216,63 @@ async function loadItems(){
         }
 
 
-        items.forEach(item => {
+
+        items.forEach(item=>{
 
 
             html += `
 
             <div class="item">
 
-                <b>
-                ${item.name}
-                </b>
 
-                <br>
-
-                Quantity:
-                ${item.quantity}
-                ${item.unit}
+            <b>
+            ${item.name}
+            </b>
 
 
-                <br>
-
-                Location:
-                ${item.location || "None"}
+            <br>
 
 
-                <br><br>
-
-                Category:
-                ${item.category || "None"}
-
-
-                <br><br>
+            Quantity:
+            ${item.quantity}
+            ${item.unit}
 
 
-                <button onclick="removeOne(${item.id})">
-                    Remove one
-                </button>
+
+            <br>
 
 
-                <button onclick="deleteItem(${item.id})">
-                    Delete
-                </button>
+            Category:
+            ${item.category || "None"}
+
+
+
+            <br>
+
+
+            Location:
+            ${item.location || "None"}
+
+
+
+            <br><br>
+
+
+
+            <button onclick="removeOne(${item.id})">
+            Remove one
+            </button>
+
+
+
+            <button onclick="deleteItem(${item.id})">
+            Delete
+            </button>
+
 
 
             </div>
+
 
             <br>
 
@@ -150,7 +282,9 @@ async function loadItems(){
         });
 
 
-        document.getElementById("items").innerHTML = html;
+
+        document.getElementById("items")
+        .innerHTML = html;
 
 
     }
@@ -167,6 +301,7 @@ async function loadItems(){
 // ===============================
 // Add Item
 // ===============================
+
 
 async function addItem(){
 
@@ -194,7 +329,23 @@ async function addItem(){
         ),
 
 
+
+        category_id:
+        Number(
+            document.getElementById("category").value
+        ) || null,
+
+
+
+        location_id:
+        Number(
+            document.getElementById("location").value
+        ) || null,
+
+
+
         notes:""
+
 
     };
 
@@ -203,7 +354,7 @@ async function addItem(){
     if(!item.name){
 
         alert(
-            "Please enter item name"
+        "Enter item name"
         );
 
         return;
@@ -220,10 +371,14 @@ async function addItem(){
 
             method:"POST",
 
+
             headers:{
+
                 "Content-Type":
                 "application/json"
+
             },
+
 
             body:
             JSON.stringify(item)
@@ -235,14 +390,19 @@ async function addItem(){
 
 
     document.getElementById("name").value="";
+
     document.getElementById("quantity").value="";
+
     document.getElementById("unit").value="";
+
     document.getElementById("minimum").value="";
+
 
 
     await loadItems();
 
     await loadDashboard();
+
 
 }
 
@@ -252,20 +412,18 @@ async function addItem(){
 // Remove One Quantity
 // ===============================
 
+
 async function removeOne(id){
 
 
     const item =
-        items.find(i => i.id == id);
+    items.find(
+        i=>i.id == id
+    );
 
 
 
     if(!item){
-
-        console.log(
-            "Item not found",
-            id
-        );
 
         return;
 
@@ -274,22 +432,14 @@ async function removeOne(id){
 
 
     const newQuantity =
-        item.quantity - 1;
+    item.quantity - 1;
 
 
 
     if(newQuantity <= 0){
 
 
-        await fetch(
-
-            API + "/items/" + id,
-
-            {
-                method:"DELETE"
-            }
-
-        );
+        await deleteItem(id);
 
 
     }
@@ -304,16 +454,20 @@ async function removeOne(id){
 
                 method:"PUT",
 
+
                 headers:{
+
                     "Content-Type":
                     "application/json"
+
                 },
 
+
                 body:
+
                 JSON.stringify({
 
-                    quantity:
-                    newQuantity
+                    quantity:newQuantity
 
                 })
 
@@ -339,19 +493,8 @@ async function removeOne(id){
 // Delete Item
 // ===============================
 
+
 async function deleteItem(id){
-
-
-    if(
-        !confirm(
-            "Delete this item?"
-        )
-    ){
-
-        return;
-
-    }
-
 
 
     await fetch(
@@ -367,7 +510,6 @@ async function deleteItem(id){
     );
 
 
-
     await loadItems();
 
     await loadDashboard();
@@ -378,8 +520,9 @@ async function deleteItem(id){
 
 
 // ===============================
-// Load Settings
+// Settings
 // ===============================
+
 
 async function loadSettings(){
 
@@ -387,24 +530,17 @@ async function loadSettings(){
 
 
         const response =
-            await fetch(
-                API + "/settings"
-            );
-
-
-        const settings =
-            await response.json();
-
+        await fetch(API + "/settings");
 
 
         window.settings =
-            settings;
+        await response.json();
 
 
 
         console.log(
             "Settings:",
-            settings
+            window.settings
         );
 
 
@@ -420,16 +556,23 @@ async function loadSettings(){
 
 
 // ===============================
-// Start App
+// Start
 // ===============================
+
 
 async function start(){
 
+
     await loadSettings();
+
+    await loadCategories();
+
+    await loadLocations();
 
     await loadItems();
 
     await loadDashboard();
+
 
 }
 
@@ -437,12 +580,13 @@ async function start(){
 start();
 
 
-// Auto refresh every second
 
-setInterval(() => {
+// Refresh every second
+
+setInterval(()=>{
 
     loadItems();
 
     loadDashboard();
 
-}, 1000);
+},1000);

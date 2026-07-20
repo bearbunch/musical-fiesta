@@ -1,72 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PantryCloud</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="style.css">
+<title>PantryCloud</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<header>
-    <h1>🏠 PantryCloud</h1>
-</header>
+
+<h1>PantryCloud</h1>
 
 
-<main>
+<div id="stats"></div>
 
-<section class="card">
-    <h2>Dashboard</h2>
-
-    <div id="stats">
-        Loading...
-    </div>
-</section>
-
-
-<section class="card">
 
 <h2>Add Item</h2>
 
+
+<div class="form">
+
+
 <input id="name" placeholder="Item name">
 
-<input id="quantity" 
-       type="number" 
-       placeholder="Quantity">
+
+<input id="quantity" type="number" placeholder="Quantity">
 
 
-<input id="unit" 
-       placeholder="Unit (kg, box, bottle)">
+<input id="unit" placeholder="Unit (kg, bottle, etc.)">
 
 
-<input id="minimum"
-       type="number"
-       placeholder="Minimum quantity">
+<input id="minimum" type="number" placeholder="Minimum quantity">
+
+
+
+<label>
+Category
+</label>
+
+<select id="category">
+
+<option value="">
+No category
+</option>
+
+</select>
+
+
+
+<label>
+Location
+</label>
+
+<select id="location">
+
+<option value="">
+No location
+</option>
+
+</select>
+
 
 
 <button onclick="addItem()">
 Add Item
 </button>
 
-</section>
+
+</div>
 
 
-<section class="card">
 
 <h2>Inventory</h2>
 
-<div id="items">
-Loading...
-</div>
 
-</section>
+<div id="items"></div>
 
-
-</main>
 
 
 <script src="app.js"></script>
+
 
 </body>
 </html>
