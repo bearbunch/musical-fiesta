@@ -1,98 +1,71 @@
-/* ===============================
-   PantryCloud Style
-   =============================== */
-
-
 * {
-    box-sizing: border-box;
+
+    box-sizing:border-box;
+
 }
+
 
 
 body {
 
-    font-family: Arial, sans-serif;
+    font-family:Arial,sans-serif;
 
-    margin: 0;
+    margin:0;
 
-    padding-top: 30px;
+    padding:30px 40px;
 
-    padding-bottom: 30px;
+    background:#f5f5f5;
 
-    padding-left: 40px;
-
-    padding-right: 40px;
-
-    background: #f5f5f5;
-
-    color: #222;
+    color:#222;
 
 }
 
 
-
-/* Headings */
 
 h1 {
 
-    text-align: center;
-
-    margin-bottom: 30px;
+    text-align:center;
 
 }
 
 
-h2 {
-
-    margin-top: 30px;
-
-}
-
-
-
-/* Dashboard */
 
 #stats {
 
-    display: flex;
+    display:flex;
 
-    gap: 20px;
+    gap:20px;
 
-    flex-wrap: wrap;
-
-    margin-bottom: 25px;
+    flex-wrap:wrap;
 
 }
+
 
 
 #stats div {
 
-    background: white;
+    background:white;
 
-    padding: 20px;
+    padding:20px;
 
-    border-radius: 10px;
+    border-radius:10px;
 
-    min-width: 160px;
-
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow:
+    0 2px 5px rgba(0,0,0,.1);
 
 }
 
 
 
-/* Form */
-
 .form {
 
-    background: white;
+    background:white;
 
-    padding: 25px;
+    padding:25px;
 
-    border-radius: 12px;
+    border-radius:12px;
 
-    max-width: 500px;
-
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-width:500px;
 
 }
 
@@ -101,19 +74,17 @@ h2 {
 input,
 select {
 
-    width: 100%;
+    width:100%;
 
-    padding: 12px;
+    padding:12px;
 
-    margin-top: 8px;
+    margin:8px 0 15px;
 
-    margin-bottom: 15px;
+    border-radius:8px;
 
-    border: 1px solid #ccc;
+    border:1px solid #ccc;
 
-    border-radius: 8px;
-
-    font-size: 16px;
+    font-size:16px;
 
 }
 
@@ -121,33 +92,23 @@ select {
 
 label {
 
-    display: block;
-
-    margin-top: 10px;
-
-    font-weight: bold;
+    font-weight:bold;
 
 }
 
 
 
-/* Buttons */
-
 button {
 
-    padding: 10px 16px;
+    padding:10px 16px;
 
-    border: none;
+    border:0;
 
-    border-radius: 8px;
+    border-radius:8px;
 
-    cursor: pointer;
+    cursor:pointer;
 
-    font-size: 15px;
-
-    margin-right: 8px;
-
-    margin-top: 5px;
+    margin:5px;
 
 }
 
@@ -155,17 +116,35 @@ button {
 
 button:hover {
 
-    opacity: 0.8;
+    opacity:.8;
 
 }
 
 
 
-/* Inventory */
+#searchBox {
 
-#items {
+    max-width:500px;
 
-    margin-top: 20px;
+}
+
+
+
+#locationTabs,
+#categoryTabs {
+
+    margin:15px 0;
+
+}
+
+
+
+#locationTabs button,
+#categoryTabs button {
+
+    background:white;
+
+    border:1px solid #ccc;
 
 }
 
@@ -173,15 +152,16 @@ button:hover {
 
 .item {
 
-    background: white;
+    background:white;
 
-    padding: 20px;
+    padding:20px;
 
-    border-radius: 12px;
+    border-radius:12px;
 
-    margin-bottom: 15px;
+    margin-bottom:15px;
 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow:
+    0 2px 5px rgba(0,0,0,.1);
 
 }
 
@@ -189,42 +169,24 @@ button:hover {
 
 .item b {
 
-    font-size: 20px;
+    font-size:20px;
 
 }
 
 
 
-/* Mobile */
-
-@media (max-width:600px) {
-
+@media(max-width:600px){
 
     body {
 
-        padding-top: 20px;
-
-        padding-bottom: 20px;
-
-        padding-left: 15px;
-
-        padding-right: 15px;
-
-    }
-
-
-    #stats {
-
-        flex-direction: column;
+        padding:20px 15px;
 
     }
 
 
     button {
 
-        width: 100%;
-
-        margin-top: 10px;
+        width:100%;
 
     }
 
