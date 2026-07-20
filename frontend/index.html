@@ -4,13 +4,16 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>PantryCloud</title>
 
+
 <link rel="stylesheet" href="style.css">
 
 </head>
+
 
 
 <body>
@@ -19,17 +22,26 @@
 <h1>PantryCloud</h1>
 
 
+
+
+<!-- Dashboard -->
+
 <div id="stats"></div>
+
 
 
 <hr>
 
 
 
+<!-- ADD ITEM -->
+
+
 <h2>Add Item</h2>
 
 
 <div class="form">
+
 
 
 <button
@@ -42,7 +54,9 @@ Openable: OFF
 </button>
 
 
+
 <br><br>
+
 
 
 
@@ -59,6 +73,8 @@ placeholder="Item name">
 
 
 
+
+<!-- Normal Quantity -->
 
 <div id="normalQuantity">
 
@@ -79,6 +95,9 @@ min="0">
 
 
 
+
+
+<!-- Openable Quantity -->
 
 
 <div
@@ -111,7 +130,9 @@ value="0"
 min="0">
 
 
+
 </div>
+
 
 
 
@@ -124,7 +145,8 @@ Unit
 
 <input
 id="unit"
-placeholder="bottle, tin, kg">
+type="text"
+placeholder="e.g. bottle, tin, kg">
 
 
 
@@ -152,11 +174,14 @@ Category
 
 <select id="category">
 
+
 <option value="">
 No category
 </option>
 
+
 </select>
+
 
 
 
@@ -169,9 +194,11 @@ Location
 
 <select id="location">
 
+
 <option value="">
 No location
 </option>
+
 
 </select>
 
@@ -189,6 +216,7 @@ Add Item
 </button>
 
 
+
 </div>
 
 
@@ -206,152 +234,230 @@ Add Item
 
 
 
-<!-- EDIT ITEM FORM -->
+<!-- EDIT ITEM -->
 
-<hr>
 
 <h2>Edit Item</h2>
 
-<div class="form" id="editBox" style="display:none;">
 
-    <input type="hidden" id="editId">
 
+<div
+class="form"
+id="editBox"
+style="display:none;">
 
-    <label>
-        Item Name
-    </label>
 
-    <input
-        id="editName"
-        type="text">
 
+<input
+type="hidden"
+id="editId">
 
 
-    <div id="editNormalQuantity">
 
-        <label>
-            Quantity
-        </label>
 
-        <input
-            id="editQuantity"
-            type="number"
-            min="0">
 
-    </div>
+<button
+id="editOpenableButton"
+type="button"
+onclick="toggleEditOpenable()">
 
+Openable: OFF
 
+</button>
 
 
-    <div id="editOpenFields" style="display:none;">
 
-        <label>
-            Unopened Quantity
-        </label>
+<br><br>
 
-        <input
-            id="editUnopened"
-            type="number"
-            min="0">
 
 
-        <label>
-            Opened Quantity
-        </label>
 
-        <input
-            id="editOpened"
-            type="number"
-            min="0">
 
 
-    </div>
+<label>
+Item Name
+</label>
 
 
+<input
+id="editName"
+type="text"
+placeholder="Item name">
 
 
-    <label>
-        Openable
-    </label>
 
-    <input
-        id="editOpenable"
-        type="checkbox">
 
 
 
+<!-- Edit Normal Quantity -->
 
 
-    <label>
-        Unit
-    </label>
+<div id="editNormalQuantity">
 
-    <input
-        id="editUnit"
-        type="text">
 
+<label>
+Quantity
+</label>
 
 
+<input
+id="editQuantity"
+type="number"
+value="1"
+min="0">
 
 
-    <label>
-        Minimum Quantity
-    </label>
+</div>
 
-    <input
-        id="editMinimum"
-        type="number"
-        min="0">
 
 
 
 
 
-    <label>
-        Category
-    </label>
 
-    <select id="editCategory">
 
-        <option value="">
-            No category
-        </option>
+<!-- Edit Open Quantities -->
 
-    </select>
 
+<div
+id="editOpenQuantityFields"
+style="display:none;">
 
 
 
+<label>
+Unopened Quantity
+</label>
 
 
-    <label>
-        Location
-    </label>
+<input
+id="editUnopenedQuantity"
+type="number"
+value="1"
+min="0">
 
-    <select id="editLocation">
 
-        <option value="">
-            No location
-        </option>
 
-    </select>
 
 
+<label>
+Opened Quantity
+</label>
 
 
+<input
+id="editOpenedQuantity"
+type="number"
+value="0"
+min="0">
 
-    <br><br>
 
 
-    <button onclick="saveEdit()">
-        Save Changes
-    </button>
+</div>
 
 
 
-    <button onclick="cancelEdit()">
-        Cancel
-    </button>
+
+
+
+
+
+<label>
+Unit
+</label>
+
+
+<input
+id="editUnit"
+type="text"
+placeholder="e.g. bottle, tin, kg">
+
+
+
+
+
+
+
+<label>
+Minimum Quantity
+</label>
+
+
+<input
+id="editMinimum"
+type="number"
+value="0"
+min="0">
+
+
+
+
+
+
+
+
+<label>
+Category
+</label>
+
+
+<select id="editCategory">
+
+
+<option value="">
+No category
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<label>
+Location
+</label>
+
+
+<select id="editLocation">
+
+
+<option value="">
+No location
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<br>
+
+
+
+<button onclick="saveEdit()">
+
+Save Changes
+
+</button>
+
+
+
+
+<button onclick="cancelEdit()">
+
+Cancel
+
+</button>
+
+
 
 
 </div>
@@ -368,6 +474,10 @@ Add Item
 
 
 
+
+
+
+<!-- INVENTORY -->
 
 
 <h2>Inventory</h2>
@@ -386,7 +496,9 @@ oninput="searchItems()">
 
 
 
+
 <br><br>
+
 
 
 
@@ -394,16 +506,21 @@ oninput="searchItems()">
 <div id="locationTabs"></div>
 
 
+
 <br>
+
 
 
 <div id="categoryTabs"></div>
 
 
+
 <br>
 
 
+
 <div id="items"></div>
+
 
 
 
