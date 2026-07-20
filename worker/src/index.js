@@ -12,7 +12,6 @@ app.use(
     allowHeaders: ["Content-Type"],
   })
 );
-const app = new Hono();
 
 
 app.get("/", (c)=>{
