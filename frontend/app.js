@@ -26,12 +26,11 @@ let isOpenable = false;
 
 
 // ===============================
-// Openable Toggle Button
+// Openable Toggle
 // ===============================
 
 
 function toggleOpenable(){
-
 
     isOpenable = !isOpenable;
 
@@ -40,61 +39,59 @@ function toggleOpenable(){
     document.getElementById("openableButton");
 
 
-    const fields =
+    const normal =
+    document.getElementById("normalQuantity");
+
+
+    const open =
     document.getElementById("openQuantityFields");
 
 
 
-    if(!button){
-
-        console.error(
-        "openableButton missing"
-        );
-
-        return;
-
-    }
+    if(!button) return;
 
 
 
     if(isOpenable){
 
-
-        button.innerHTML =
+        button.textContent =
         "Openable: ON";
 
 
         button.classList.add("active");
 
 
-        if(fields){
+        if(normal)
+        normal.style.display="none";
 
-            fields.style.display="block";
 
-        }
+        if(open)
+        open.style.display="block";
 
 
     }
     else{
 
 
-        button.innerHTML =
+        button.textContent =
         "Openable: OFF";
 
 
         button.classList.remove("active");
 
 
-        if(fields){
+        if(normal)
+        normal.style.display="block";
 
-            fields.style.display="none";
 
-        }
+        if(open)
+        open.style.display="none";
 
 
     }
 
 }
+
 
 
 
@@ -105,18 +102,20 @@ function toggleOpenable(){
 
 async function loadDashboard(){
 
-
     try{
 
 
         const response =
         await fetch(API+"/items");
 
+
         const data =
         await response.json();
 
 
+
         let lowStock = 0;
+
 
 
         data.forEach(item=>{
@@ -138,18 +137,15 @@ async function loadDashboard(){
 
         document.getElementById("stats").innerHTML = `
 
-
         <div>
         Total Items:
         <b>${data.length}</b>
         </div>
 
-
         <div>
         Low Stock:
         <b>${lowStock}</b>
         </div>
-
 
         `;
 
@@ -173,49 +169,61 @@ async function loadDashboard(){
 
 async function loadCategories(){
 
-
-    const response =
-    await fetch(API+"/categories");
+    try{
 
 
-    categories =
-    await response.json();
+        const response =
+        await fetch(API+"/categories");
 
 
-
-    const select =
-    document.getElementById("category");
-
-
-    if(!select) return;
+        categories =
+        await response.json();
 
 
 
-    select.innerHTML =
-    `
-    <option value="">
-    No category
-    </option>
-    `;
+        const select =
+        document.getElementById("category");
 
 
 
-    categories.forEach(category=>{
+        if(!select)
+        return;
 
 
-        select.innerHTML += `
 
-        <option value="${category.id}">
-        ${category.name}
+        select.innerHTML =
+        `
+        <option value="">
+        No category
         </option>
-
         `;
 
 
-    });
 
+        categories.forEach(category=>{
+
+
+            select.innerHTML += `
+
+            <option value="${category.id}">
+            ${category.name}
+            </option>
+
+            `;
+
+
+        });
+
+
+    }
+    catch(error){
+
+        console.log(error);
+
+    }
 
 }
+
 
 
 
@@ -227,47 +235,58 @@ async function loadCategories(){
 
 async function loadLocations(){
 
-
-    const response =
-    await fetch(API+"/locations");
+    try{
 
 
-    locations =
-    await response.json();
+        const response =
+        await fetch(API+"/locations");
 
 
-
-    const select =
-    document.getElementById("location");
-
-
-    if(!select) return;
+        locations =
+        await response.json();
 
 
 
-    select.innerHTML =
-    `
-    <option value="">
-    No location
-    </option>
-    `;
+        const select =
+        document.getElementById("location");
 
 
 
-    locations.forEach(location=>{
+        if(!select)
+        return;
 
 
-        select.innerHTML += `
 
-        <option value="${location.id}">
-        ${location.name}
+        select.innerHTML =
+        `
+        <option value="">
+        No location
         </option>
-
         `;
 
 
-    });
 
+        locations.forEach(location=>{
+
+
+            select.innerHTML += `
+
+            <option value="${location.id}">
+            ${location.name}
+            </option>
+
+            `;
+
+
+        });
+
+
+    }
+    catch(error){
+
+        console.log(error);
+
+    }
 
 }
 
@@ -280,7 +299,6 @@ async function loadLocations(){
 
 
 async function loadItems(){
-
 
     try{
 
@@ -296,9 +314,7 @@ async function loadItems(){
 
         createTabs();
 
-
         renderItems();
-
 
 
     }
@@ -308,9 +324,7 @@ async function loadItems(){
 
     }
 
-
 }
-
 
 // ===============================
 // Create Tabs
@@ -318,7 +332,6 @@ async function loadItems(){
 
 
 function createTabs(){
-
 
     const locationDiv =
     document.getElementById("locationTabs");
@@ -334,13 +347,13 @@ function createTabs(){
 
 
 
-    let locationList = [
+    const locationList = [
 
         "All",
 
         ...new Set(
             items
-            .map(i=>i.location)
+            .map(item=>item.location)
             .filter(Boolean)
         )
 
@@ -372,7 +385,7 @@ function createTabs(){
 
 
 
-    let categoryList = [
+    const categoryList = [
 
         "All",
 
@@ -380,7 +393,7 @@ function createTabs(){
 
             items
 
-            .filter(item=>
+            .filter(item =>
 
                 selectedLocation==="All" ||
 
@@ -388,7 +401,7 @@ function createTabs(){
 
             )
 
-            .map(i=>i.category)
+            .map(item=>item.category)
 
             .filter(Boolean)
 
@@ -434,13 +447,18 @@ function createTabs(){
 function searchItems(){
 
 
+    const box =
+    document.getElementById("searchBox");
+
+
+
+    if(!box)
+    return;
+
+
+
     searchText =
-
-    document.getElementById("searchBox")
-
-    .value
-
-    .toLowerCase();
+    box.value.toLowerCase();
 
 
 
@@ -452,14 +470,12 @@ function searchItems(){
 
 
 
-
 // ===============================
-// Filter Buttons
+// Filters
 // ===============================
 
 
 function selectLocation(location){
-
 
     selectedLocation = location;
 
@@ -472,19 +488,17 @@ function selectLocation(location){
 
     renderItems();
 
-
 }
+
 
 
 
 function selectCategory(category){
 
-
     selectedCategory = category;
 
 
     renderItems();
-
 
 }
 
@@ -493,7 +507,7 @@ function selectCategory(category){
 
 
 // ===============================
-// Display Items
+// Render Items
 // ===============================
 
 
@@ -504,32 +518,38 @@ function renderItems(){
     document.getElementById("items");
 
 
-    let filtered =
 
-    items.filter(item=>{
+    if(!container)
+    return;
+
+
+
+    let filtered = items.filter(item=>{
 
 
         return (
 
-            (selectedLocation==="All" ||
-            item.location===selectedLocation)
+            selectedLocation==="All" ||
 
+            item.location===selectedLocation
 
-            &&
+        )
 
+        &&
 
-            (selectedCategory==="All" ||
-            item.category===selectedCategory)
+        (
 
+            selectedCategory==="All" ||
 
-            &&
+            item.category===selectedCategory
 
+        )
 
-            item.name
-            .toLowerCase()
-            .includes(searchText)
+        &&
 
-        );
+        item.name
+        .toLowerCase()
+        .includes(searchText);
 
 
     });
@@ -537,13 +557,14 @@ function renderItems(){
 
 
 
-    let html="";
+    let html = "";
 
 
 
     if(filtered.length===0){
 
-        html="<p>No items found</p>";
+        html =
+        "<p>No items found</p>";
 
     }
 
@@ -579,46 +600,51 @@ function renderItems(){
         <br>
 
 
+
         ${
-        item.openable == 1
+            item.openable == 1
 
-        ?
+            ?
 
-        `
+            `
 
-        Unopened:
-        ${item.unopened_quantity}
-        ${item.unit}
-
-
-        <br>
+            Unopened:
+            ${item.unopened_quantity || 0}
+            ${item.unit}
 
 
-        Opened:
-        ${item.opened_quantity}
-        ${item.unit}
+            <br>
 
 
-        <br><br>
+            Opened:
+            ${item.opened_quantity || 0}
+            ${item.unit}
 
 
-        <button onclick="openOne(${item.id})">
+            <br><br>
 
-        Open 1
 
-        </button>
+            <button onclick="openOne(${item.id})">
 
-        `
+            Open 1
 
-        :
+            </button>
 
-        `
 
-        Quantity:
-        ${item.quantity}
-        ${item.unit}
+            `
 
-        `
+
+            :
+
+
+            `
+
+            Quantity:
+            ${item.quantity}
+            ${item.unit}
+
+
+            `
 
         }
 
@@ -645,7 +671,9 @@ function renderItems(){
 
         </div>
 
+
         <br>
+
 
         `;
 
@@ -671,6 +699,30 @@ function renderItems(){
 async function addItem(){
 
 
+    const quantity = isOpenable
+
+    ?
+
+    Number(
+        document.getElementById("unopenedQuantity").value
+    )
+
+    +
+
+    Number(
+        document.getElementById("openedQuantity").value
+    )
+
+
+    :
+
+
+    Number(
+        document.getElementById("quantity").value
+    );
+
+
+
     const item = {
 
 
@@ -678,10 +730,7 @@ async function addItem(){
         document.getElementById("name").value,
 
 
-        quantity:
-        Number(
-        document.getElementById("quantity").value
-        ),
+        quantity: quantity,
 
 
         unit:
@@ -690,21 +739,21 @@ async function addItem(){
 
         minimum_quantity:
         Number(
-        document.getElementById("minimum").value
+            document.getElementById("minimum").value
         ),
 
 
 
         category_id:
         Number(
-        document.getElementById("category").value
+            document.getElementById("category").value
         ) || null,
 
 
 
         location_id:
         Number(
-        document.getElementById("location").value
+            document.getElementById("location").value
         ) || null,
 
 
@@ -715,38 +764,44 @@ async function addItem(){
 
 
         opened_quantity:
+
+        isOpenable
+
+        ?
+
         Number(
-        document.getElementById("openedQuantity").value
-        ) || 0,
+            document.getElementById("openedQuantity").value
+        )
+
+        :
+
+        0,
 
 
 
         unopened_quantity:
 
+        isOpenable
+
+        ?
+
         Number(
-        document.getElementById("unopenedQuantity").value
+            document.getElementById("unopenedQuantity").value
         )
 
-        ||
+        :
 
-        Number(
-        document.getElementById("quantity").value
-        ),
+        quantity,
 
 
 
         notes:""
 
-
     };
 
 
 
-    await fetch(
-
-        API+"/items",
-
-        {
+    await fetch(API+"/items",{
 
         method:"POST",
 
@@ -761,10 +816,7 @@ async function addItem(){
         body:
         JSON.stringify(item)
 
-
-        }
-
-    );
+    });
 
 
 
@@ -774,10 +826,6 @@ async function addItem(){
 
 
 }
-
-
-
-
 
 // ===============================
 // Open One
@@ -797,7 +845,9 @@ async function openOne(id){
 
 
 
-    if(item.unopened_quantity <= 0){
+    if(
+        Number(item.unopened_quantity) <= 0
+    ){
 
         alert(
         "No unopened items"
@@ -819,8 +869,8 @@ async function openOne(id){
 
         headers:{
 
-        "Content-Type":
-        "application/json"
+            "Content-Type":
+            "application/json"
 
         },
 
@@ -830,22 +880,27 @@ async function openOne(id){
         JSON.stringify({
 
             unopened_quantity:
-            item.unopened_quantity - 1,
+            Number(item.unopened_quantity) - 1,
 
 
             opened_quantity:
-            item.opened_quantity + 1
+            Number(item.opened_quantity || 0) + 1,
 
+
+            quantity:
+            Number(item.quantity) - 0
 
         })
-
 
         }
 
     );
 
 
+
     await loadItems();
+
+    await loadDashboard();
 
 
 }
@@ -872,42 +927,116 @@ async function removeOne(id){
 
 
 
-    let quantity =
-    item.quantity - 1;
+    if(item.openable == 1){
+
+
+        let opened =
+        Number(item.opened_quantity || 0);
+
+
+        let unopened =
+        Number(item.unopened_quantity || 0);
 
 
 
-    await fetch(
+        if(opened > 0){
 
-        API+"/items/"+id,
+            opened--;
 
-        {
+        }
+        else if(unopened > 0){
 
-        method:"PUT",
+            unopened--;
 
-        headers:{
+        }
+        else{
 
-        "Content-Type":
-        "application/json"
-
-        },
-
-
-        body:
-
-        JSON.stringify({
-
-            quantity:quantity
-
-        })
+            return;
 
         }
 
-    );
+
+
+        await fetch(
+
+            API+"/items/"+id,
+
+            {
+
+            method:"PUT",
+
+            headers:{
+
+                "Content-Type":
+                "application/json"
+
+            },
+
+
+            body:
+
+            JSON.stringify({
+
+                opened_quantity: opened,
+
+                unopened_quantity: unopened,
+
+                quantity:
+                opened + unopened
+
+            })
+
+            }
+
+        );
+
+
+    }
+
+    else{
+
+
+        let quantity =
+        Number(item.quantity) - 1;
+
+
+
+        await fetch(
+
+            API+"/items/"+id,
+
+            {
+
+            method:"PUT",
+
+            headers:{
+
+                "Content-Type":
+                "application/json"
+
+            },
+
+
+            body:
+
+            JSON.stringify({
+
+                quantity: quantity
+
+            })
+
+            }
+
+        );
+
+
+    }
 
 
 
     await loadItems();
+
+    await loadDashboard();
 
 
 }
@@ -957,19 +1086,31 @@ async function deleteItem(id){
 async function loadSettings(){
 
 
-    const response =
-    await fetch(API+"/settings");
+    try{
 
 
-    window.settings =
-    await response.json();
+        const response =
+        await fetch(API+"/settings");
 
 
-    console.log(
-    "Settings:",
-    window.settings
-    );
 
+        window.settings =
+        await response.json();
+
+
+
+        console.log(
+        "Settings:",
+        window.settings
+        );
+
+
+    }
+    catch(error){
+
+        console.log(error);
+
+    }
 
 }
 
@@ -978,7 +1119,7 @@ async function loadSettings(){
 
 
 // ===============================
-// Start
+// Start App
 // ===============================
 
 
@@ -1005,6 +1146,7 @@ async function start(){
 
 
 start();
+
 
 
 

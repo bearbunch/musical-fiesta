@@ -19,8 +19,8 @@
     <hr>
 
     <h2>Add Item</h2>
-    <div class="form">
 
+    <div class="form">
 
         <button
             id="openableButton"
@@ -29,20 +29,66 @@
             Openable: OFF
         </button>
 
-
-    
+        <br><br>
 
         <label for="name">Item Name</label>
-        <input id="name" type="text" placeholder="Item name">
+        <input
+            id="name"
+            type="text"
+            placeholder="Item name">
 
-        <label for="quantity">Quantity</label>
-        <input id="quantity" type="number" value="1" min="0">
+        <!-- Normal Quantity -->
+        <div id="normalQuantity">
+
+            <label for="quantity">Quantity</label>
+
+            <input
+                id="quantity"
+                type="number"
+                value="1"
+                min="0">
+
+        </div>
+
+        <!-- Openable Quantities -->
+        <div
+            id="openQuantityFields"
+            style="display:none;">
+
+            <label for="unopenedQuantity">
+                Unopened Quantity
+            </label>
+
+            <input
+                id="unopenedQuantity"
+                type="number"
+                value="1"
+                min="0">
+
+            <label for="openedQuantity">
+                Opened Quantity
+            </label>
+
+            <input
+                id="openedQuantity"
+                type="number"
+                value="0"
+                min="0">
+
+        </div>
 
         <label for="unit">Unit</label>
-        <input id="unit" type="text" placeholder="e.g. bottle, tin, kg">
+        <input
+            id="unit"
+            type="text"
+            placeholder="e.g. bottle, tin, kg">
 
         <label for="minimum">Minimum Quantity</label>
-        <input id="minimum" type="number" value="0" min="0">
+        <input
+            id="minimum"
+            type="number"
+            value="0"
+            min="0">
 
         <label for="category">Category</label>
         <select id="category">
@@ -53,26 +99,6 @@
         <select id="location">
             <option value="">No location</option>
         </select>
-
-
-
-        <div id="openQuantityFields" style="display:none; margin-top:15px;">
-
-            <label for="unopenedQuantity">Unopened Quantity</label>
-            <input
-                id="unopenedQuantity"
-                type="number"
-                value="1"
-                min="0">
-
-            <label for="openedQuantity">Opened Quantity</label>
-            <input
-                id="openedQuantity"
-                type="number"
-                value="0"
-                min="0">
-
-        </div>
 
         <br>
 
@@ -92,9 +118,15 @@
         placeholder="Search products..."
         oninput="searchItems()">
 
+    <br><br>
+
     <div id="locationTabs"></div>
 
+    <br>
+
     <div id="categoryTabs"></div>
+
+    <br>
 
     <div id="items"></div>
 
