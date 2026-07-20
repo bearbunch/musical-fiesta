@@ -18,12 +18,13 @@ let selectedLocation = "All";
 
 let selectedCategory = "All";
 
+let searchText = "";
+
 
 
 // ===============================
 // Dashboard
 // ===============================
-
 
 async function loadDashboard(){
 
@@ -54,14 +55,12 @@ async function loadDashboard(){
         });
 
 
-
         document.getElementById("stats").innerHTML = `
 
         <div>
         Total Items:
         <b>${data.length}</b>
         </div>
-
 
         <div>
         Low Stock:
@@ -82,122 +81,96 @@ async function loadDashboard(){
 
 
 
-// ===============================
-// Load Categories
-// ===============================
 
+// ===============================
+// Categories
+// ===============================
 
 async function loadCategories(){
 
-    try {
-
-        const response =
-        await fetch(API + "/categories");
+    const response =
+    await fetch(API + "/categories");
 
 
-        categories =
-        await response.json();
+    categories =
+    await response.json();
 
 
-        const select =
-        document.getElementById("category");
+    const select =
+    document.getElementById("category");
 
 
-        if(!select) return;
+    if(!select) return;
 
 
-        select.innerHTML =
-        `
-        <option value="">
-        No category
+    select.innerHTML =
+    `
+    <option value="">
+    No category
+    </option>
+    `;
+
+
+    categories.forEach(category=>{
+
+        select.innerHTML += `
+
+        <option value="${category.id}">
+        ${category.name}
         </option>
+
         `;
 
-
-        categories.forEach(category=>{
-
-
-            select.innerHTML += `
-
-            <option value="${category.id}">
-            ${category.name}
-            </option>
-
-            `;
-
-
-        });
-
-
-    }
-    catch(error){
-
-        console.log(error);
-
-    }
+    });
 
 }
 
 
 
-// ===============================
-// Load Locations
-// ===============================
 
+// ===============================
+// Locations
+// ===============================
 
 async function loadLocations(){
 
-    try {
+    const response =
+    await fetch(API + "/locations");
 
 
-        const response =
-        await fetch(API + "/locations");
+    locations =
+    await response.json();
 
 
-        locations =
-        await response.json();
+    const select =
+    document.getElementById("location");
 
 
-
-        const select =
-        document.getElementById("location");
+    if(!select) return;
 
 
-        if(!select) return;
+    select.innerHTML =
+    `
+    <option value="">
+    No location
+    </option>
+    `;
 
 
-        select.innerHTML =
-        `
-        <option value="">
-        No location
+    locations.forEach(location=>{
+
+        select.innerHTML += `
+
+        <option value="${location.id}">
+        ${location.name}
         </option>
+
         `;
 
-
-        locations.forEach(location=>{
-
-
-            select.innerHTML += `
-
-            <option value="${location.id}">
-            ${location.name}
-            </option>
-
-            `;
-
-
-        });
-
-
-
-    }
-    catch(error){
-
-        console.log(error);
-
-    }
+    });
 
 }
+
 
 
 
@@ -206,11 +179,9 @@ async function loadLocations(){
 // Load Items
 // ===============================
 
-
 async function loadItems(){
 
     try {
-
 
         const response =
         await fetch(API + "/items");
@@ -220,9 +191,7 @@ async function loadItems(){
         await response.json();
 
 
-
         createTabs();
-
 
         renderItems();
 
@@ -238,10 +207,10 @@ async function loadItems(){
 
 
 
-// ===============================
-// Create Tabs
-// ===============================
 
+// ===============================
+// Tabs
+// ===============================
 
 function createTabs(){
 
@@ -252,7 +221,6 @@ function createTabs(){
 
     const categoryDiv =
     document.getElementById("categoryTabs");
-
 
 
     if(!locationDiv || !categoryDiv)
@@ -292,9 +260,7 @@ function createTabs(){
 
         `;
 
-
     });
-
 
 
 
@@ -305,13 +271,17 @@ function createTabs(){
         ...new Set(
 
             items
+
             .filter(item=>
 
                 selectedLocation==="All" ||
+
                 item.location===selectedLocation
 
             )
+
             .map(i=>i.category)
+
             .filter(Boolean)
 
         )
@@ -341,16 +311,33 @@ function createTabs(){
 
     });
 
+}
+
+
+
+// ===============================
+// Search
+// ===============================
+
+function searchItems(){
+
+    searchText =
+    document.getElementById("searchBox")
+    .value
+    .toLowerCase();
+
+
+    renderItems();
 
 }
 
 
 
 
-// ===============================
-// Select Tabs
-// ===============================
 
+// ===============================
+// Select Filters
+// ===============================
 
 function selectLocation(location){
 
@@ -378,9 +365,8 @@ function selectCategory(category){
 
 
 // ===============================
-// Render Items
+// Display Items
 // ===============================
-
 
 function renderItems(){
 
@@ -414,14 +400,30 @@ function renderItems(){
 
 
 
-        return locationMatch && categoryMatch;
+        let searchMatch =
+
+        item.name
+        .toLowerCase()
+        .includes(searchText);
+
+
+
+        return (
+
+            locationMatch &&
+
+            categoryMatch &&
+
+            searchMatch
+
+        );
 
 
     });
 
 
 
-    let html="";
+    let html = "";
 
 
 
@@ -441,42 +443,30 @@ function renderItems(){
 
         <div class="item">
 
-
-        <b>
-        ${item.name}
-        </b>
-
+        <b>${item.name}</b>
 
         <br>
-
 
         Quantity:
         ${item.quantity}
         ${item.unit}
 
-
         <br>
-
 
         Category:
         ${item.category || "None"}
 
-
         <br>
-
 
         Location:
         ${item.location || "None"}
 
-
         <br><br>
-
 
 
         <button onclick="removeOne(${item.id})">
         Remove one
         </button>
-
 
 
         <button onclick="deleteItem(${item.id})">
@@ -485,9 +475,6 @@ function renderItems(){
 
 
         </div>
-
-
-        <br>
 
         `;
 
@@ -507,7 +494,6 @@ function renderItems(){
 // ===============================
 // Add Item
 // ===============================
-
 
 async function addItem(){
 
@@ -549,43 +535,23 @@ async function addItem(){
 
         notes:""
 
-
     };
 
 
 
-    if(!item.name){
-
-        alert("Enter item name");
-
-        return;
-
-    }
-
-
-
-    await fetch(
-
-        API + "/items",
-
-        {
+    await fetch(API+"/items",{
 
         method:"POST",
 
         headers:{
-
             "Content-Type":
             "application/json"
-
         },
 
         body:
         JSON.stringify(item)
 
-        }
-
-    );
-
+    });
 
 
     await loadItems();
@@ -598,10 +564,10 @@ async function addItem(){
 
 
 
+
 // ===============================
 // Remove One
 // ===============================
-
 
 async function removeOne(id){
 
@@ -610,7 +576,6 @@ async function removeOne(id){
     items.find(
         i=>i.id==id
     );
-
 
 
     if(!item)
@@ -623,53 +588,47 @@ async function removeOne(id){
 
 
 
-    if(quantity <= 0){
-
+    if(quantity<=0){
 
         await deleteItem(id);
 
+        return;
 
     }
-    else {
 
 
-        await fetch(
 
-            API+"/items/"+id,
+    await fetch(
 
-            {
+        API+"/items/"+id,
 
-            method:"PUT",
+        {
 
-            headers:{
+        method:"PUT",
 
-            "Content-Type":
-            "application/json"
+        headers:{
 
-            },
+        "Content-Type":
+        "application/json"
+
+        },
 
 
-            body:
-            JSON.stringify({
+        body:
+
+        JSON.stringify({
 
             quantity:quantity
 
-            })
+        })
 
+        }
 
-            }
-
-        );
-
-
-    }
+    );
 
 
 
     await loadItems();
-
-    await loadDashboard();
-
 
 }
 
@@ -679,7 +638,6 @@ async function removeOne(id){
 // ===============================
 // Delete
 // ===============================
-
 
 async function deleteItem(id){
 
@@ -697,13 +655,12 @@ async function deleteItem(id){
     );
 
 
-
     await loadItems();
 
     await loadDashboard();
 
-
 }
+
 
 
 
@@ -712,34 +669,23 @@ async function deleteItem(id){
 // Settings
 // ===============================
 
-
 async function loadSettings(){
 
-    try {
+    const response =
+    await fetch(API+"/settings");
 
 
-        const response =
-        await fetch(API+"/settings");
+    window.settings =
+    await response.json();
 
 
-        window.settings =
-        await response.json();
-
-
-        console.log(
+    console.log(
         "Settings:",
         window.settings
-        );
-
-
-    }
-    catch(error){
-
-        console.log(error);
-
-    }
+    );
 
 }
+
 
 
 
@@ -747,8 +693,8 @@ async function loadSettings(){
 // Start
 // ===============================
 
-
 async function start(){
+
 
     await loadSettings();
 
@@ -760,14 +706,16 @@ async function start(){
 
     await loadDashboard();
 
+
 }
+
 
 
 start();
 
 
 
-// Refresh every second
+// Auto refresh
 
 setInterval(()=>{
 

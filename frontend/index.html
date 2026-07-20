@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>PantryCloud</title>
@@ -8,6 +9,7 @@
 
 </head>
 
+
 <body>
 
 
@@ -15,6 +17,7 @@
 
 
 <div id="stats"></div>
+
 
 
 <h2>Add Item</h2>
@@ -26,19 +29,31 @@
 <input id="name" placeholder="Item name">
 
 
-<input id="quantity" type="number" placeholder="Quantity">
+<input 
+id="quantity"
+type="number"
+placeholder="Quantity"
+>
 
 
-<input id="unit" placeholder="Unit (kg, bottle, etc.)">
+<input 
+id="unit"
+placeholder="Unit (kg, bottle, etc.)"
+>
 
 
-<input id="minimum" type="number" placeholder="Minimum quantity">
+<input 
+id="minimum"
+type="number"
+placeholder="Minimum quantity"
+>
 
 
 
 <label>
 Category
 </label>
+
 
 <select id="category">
 
@@ -53,6 +68,7 @@ No category
 <label>
 Location
 </label>
+
 
 <select id="location">
 
@@ -73,12 +89,24 @@ Add Item
 
 
 
+
 <h2>Inventory</h2>
+
+
+
+<input
+id="searchBox"
+placeholder="Search products..."
+oninput="searchItems()"
+>
+
 
 
 <div id="locationTabs"></div>
 
+
 <div id="categoryTabs"></div>
+
 
 
 <div id="items"></div>
@@ -89,4 +117,5 @@ Add Item
 
 
 </body>
+
 </html>
