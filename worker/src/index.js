@@ -8,14 +8,14 @@ app.use(
   "*",
   cors({
     origin: "*",
-    allowMethods: [
+    allowMethods:[
       "GET",
       "POST",
       "PUT",
       "DELETE",
       "OPTIONS"
     ],
-    allowHeaders: [
+    allowHeaders:[
       "Content-Type"
     ],
   })
@@ -55,9 +55,7 @@ app.get("/settings", async(c)=>{
 
     const result =
     await db.prepare(
-
         "SELECT key,value FROM settings"
-
     ).all();
 
 
@@ -79,6 +77,7 @@ app.get("/settings", async(c)=>{
 
 
 });
+
 
 
 
@@ -136,6 +135,9 @@ app.put("/settings/:key", async(c)=>{
 
 
 
+
+
+
 // ===============================
 // ITEMS
 // ===============================
@@ -150,7 +152,6 @@ app.get("/items", async(c)=>{
 
 
     const items =
-
     await db.prepare(`
 
 
@@ -194,7 +195,13 @@ app.get("/items", async(c)=>{
 
 
 
+
+
+
+// ===============================
 // ADD ITEM
+// ===============================
+
 
 app.post("/items", async(c)=>{
 
@@ -237,7 +244,6 @@ try{
     opened_quantity,
 
     unopened_quantity
-
 
     )
 
@@ -299,7 +305,6 @@ catch(error){
 
         error:error.message
 
-
     },500);
 
 
@@ -315,7 +320,12 @@ catch(error){
 
 
 
-// UPDATE ITEM
+
+
+// ===============================
+// FULL EDIT ITEM
+// ===============================
+
 
 app.put("/items/:id", async(c)=>{
 
@@ -330,7 +340,7 @@ try{
     c.req.param("id");
 
 
-    const body =
+    const item =
     await c.req.json();
 
 
@@ -343,20 +353,27 @@ try{
     SET
 
 
-    quantity =
-    COALESCE(?,quantity),
+    name=?,
 
+    category_id=?,
 
-    opened_quantity =
-    COALESCE(?,opened_quantity),
+    location_id=?,
 
+    quantity=?,
 
-    unopened_quantity =
-    COALESCE(?,unopened_quantity),
+    unit=?,
 
+    minimum_quantity=?,
 
-    updated_at =
-    CURRENT_TIMESTAMP
+    notes=?,
+
+    openable=?,
+
+    opened_quantity=?,
+
+    unopened_quantity=?,
+
+    updated_at=CURRENT_TIMESTAMP
 
 
     WHERE id=?
@@ -364,16 +381,41 @@ try{
 
     `)
 
-
     .bind(
 
-        body.quantity ?? null,
 
-        body.opened_quantity ?? null,
+        item.name,
 
-        body.unopened_quantity ?? null,
+
+        item.category_id ?? null,
+
+
+        item.location_id ?? null,
+
+
+        item.quantity ?? 0,
+
+
+        item.unit ?? "unit",
+
+
+        item.minimum_quantity ?? 0,
+
+
+        item.notes ?? "",
+
+
+        item.openable ?? 0,
+
+
+        item.opened_quantity ?? 0,
+
+
+        item.unopened_quantity ?? item.quantity ?? 0,
+
 
         id
+
 
     )
 
@@ -381,9 +423,10 @@ try{
 
 
 
+
     return c.json({
 
-        updated:true
+        success:true
 
     });
 
@@ -395,6 +438,8 @@ catch(error){
 
 
     return c.json({
+
+        success:false,
 
         error:error.message
 
@@ -412,7 +457,12 @@ catch(error){
 
 
 
+
+
+// ===============================
 // DELETE ITEM
+// ===============================
+
 
 app.delete("/items/:id", async(c)=>{
 
@@ -451,6 +501,8 @@ app.delete("/items/:id", async(c)=>{
 
 
 
+
+
 // ===============================
 // CATEGORIES
 // ===============================
@@ -475,6 +527,9 @@ app.get("/categories", async(c)=>{
 
 
 });
+
+
+
 
 
 
@@ -512,7 +567,12 @@ app.get("/locations", async(c)=>{
 
 
 
+
+
+// ===============================
 // DEBUG
+// ===============================
+
 
 app.get("/debug", async(c)=>{
 
@@ -539,6 +599,9 @@ app.get("/debug", async(c)=>{
 
 
 });
+
+
+
 
 
 

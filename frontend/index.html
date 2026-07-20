@@ -2,136 +2,447 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PantryCloud</title>
 
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PantryCloud</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
-    <h1>PantryCloud</h1>
 
-    <!-- Dashboard -->
-    <div id="stats"></div>
+<h1>PantryCloud</h1>
 
-    <hr>
 
-    <h2>Add Item</h2>
+<div id="stats"></div>
 
-    <div class="form">
 
-        <button
-            id="openableButton"
-            type="button"
-            onclick="toggleOpenable()">
-            Openable: OFF
-        </button>
+<hr>
 
-        <br><br>
 
-        <label for="name">Item Name</label>
-        <input
-            id="name"
-            type="text"
-            placeholder="Item name">
 
-        <!-- Normal Quantity -->
-        <div id="normalQuantity">
+<h2>Add Item</h2>
 
-            <label for="quantity">Quantity</label>
 
-            <input
-                id="quantity"
-                type="number"
-                value="1"
-                min="0">
+<div class="form">
 
-        </div>
 
-        <!-- Openable Quantities -->
-        <div
-            id="openQuantityFields"
-            style="display:none;">
+<button
+id="openableButton"
+type="button"
+onclick="toggleOpenable()">
 
-            <label for="unopenedQuantity">
-                Unopened Quantity
-            </label>
+Openable: OFF
 
-            <input
-                id="unopenedQuantity"
-                type="number"
-                value="1"
-                min="0">
+</button>
 
-            <label for="openedQuantity">
-                Opened Quantity
-            </label>
 
-            <input
-                id="openedQuantity"
-                type="number"
-                value="0"
-                min="0">
+<br><br>
 
-        </div>
 
-        <label for="unit">Unit</label>
-        <input
-            id="unit"
-            type="text"
-            placeholder="e.g. bottle, tin, kg">
 
-        <label for="minimum">Minimum Quantity</label>
-        <input
-            id="minimum"
-            type="number"
-            value="0"
-            min="0">
+<label>
+Item Name
+</label>
 
-        <label for="category">Category</label>
-        <select id="category">
-            <option value="">No category</option>
-        </select>
 
-        <label for="location">Location</label>
-        <select id="location">
-            <option value="">No location</option>
-        </select>
+<input
+id="name"
+type="text"
+placeholder="Item name">
 
-        <br>
 
-        <button onclick="addItem()">
-            Add Item
-        </button>
 
-    </div>
 
-    <hr>
 
-    <h2>Inventory</h2>
+<div id="normalQuantity">
 
-    <input
-        id="searchBox"
-        type="text"
-        placeholder="Search products..."
-        oninput="searchItems()">
 
-    <br><br>
+<label>
+Quantity
+</label>
 
-    <div id="locationTabs"></div>
 
-    <br>
+<input
+id="quantity"
+type="number"
+value="1"
+min="0">
 
-    <div id="categoryTabs"></div>
 
-    <br>
+</div>
 
-    <div id="items"></div>
 
-    <script src="app.js"></script>
+
+
+
+<div
+id="openQuantityFields"
+style="display:none;">
+
+
+<label>
+Unopened Quantity
+</label>
+
+
+<input
+id="unopenedQuantity"
+type="number"
+value="1"
+min="0">
+
+
+
+<label>
+Opened Quantity
+</label>
+
+
+<input
+id="openedQuantity"
+type="number"
+value="0"
+min="0">
+
+
+</div>
+
+
+
+
+
+<label>
+Unit
+</label>
+
+
+<input
+id="unit"
+placeholder="bottle, tin, kg">
+
+
+
+
+
+<label>
+Minimum Quantity
+</label>
+
+
+<input
+id="minimum"
+type="number"
+value="0"
+min="0">
+
+
+
+
+
+<label>
+Category
+</label>
+
+
+<select id="category">
+
+<option value="">
+No category
+</option>
+
+</select>
+
+
+
+
+
+<label>
+Location
+</label>
+
+
+<select id="location">
+
+<option value="">
+No location
+</option>
+
+</select>
+
+
+
+
+
+<br>
+
+
+<button onclick="addItem()">
+
+Add Item
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<hr>
+
+
+
+
+
+
+
+<!-- EDIT ITEM FORM -->
+
+<div
+id="editBox"
+style="display:none;">
+
+
+<h2>Edit Item</h2>
+
+
+<div class="form">
+
+
+
+<input
+id="editId"
+type="hidden">
+
+
+
+
+
+<label>
+Item Name
+</label>
+
+
+<input
+id="editName">
+
+
+
+
+
+<label>
+Quantity
+</label>
+
+
+<input
+id="editQuantity"
+type="number">
+
+
+
+
+
+<label>
+Unit
+</label>
+
+
+<input
+id="editUnit">
+
+
+
+
+
+<label>
+Minimum Quantity
+</label>
+
+
+<input
+id="editMinimum"
+type="number">
+
+
+
+
+
+<label>
+Category
+</label>
+
+
+<select id="editCategory">
+
+<option value="">
+No category
+</option>
+
+</select>
+
+
+
+
+
+<label>
+Location
+</label>
+
+
+<select id="editLocation">
+
+<option value="">
+No location
+</option>
+
+</select>
+
+
+
+
+
+<label>
+Openable
+</label>
+
+
+<input
+id="editOpenable"
+type="checkbox">
+
+
+
+
+
+<div
+id="editOpenFields"
+style="display:none;">
+
+
+<label>
+Unopened Quantity
+</label>
+
+
+<input
+id="editUnopened"
+type="number">
+
+
+
+
+
+<label>
+Opened Quantity
+</label>
+
+
+<input
+id="editOpened"
+type="number">
+
+
+</div>
+
+
+
+
+
+
+<br>
+
+
+<button onclick="saveEdit()">
+
+Save Changes
+
+</button>
+
+
+
+<button onclick="cancelEdit()">
+
+Cancel
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<hr>
+
+
+
+
+
+
+<h2>Inventory</h2>
+
+
+
+
+
+<input
+id="searchBox"
+type="text"
+placeholder="Search products..."
+oninput="searchItems()">
+
+
+
+
+
+<br><br>
+
+
+
+
+<div id="locationTabs"></div>
+
+
+<br>
+
+
+<div id="categoryTabs"></div>
+
+
+<br>
+
+
+<div id="items"></div>
+
+
+
+
+
+<script src="app.js"></script>
+
+
 
 </body>
+
 
 </html>

@@ -25,12 +25,14 @@ let isOpenable = false;
 
 
 
+
 // ===============================
 // Openable Toggle
 // ===============================
 
 
 function toggleOpenable(){
+
 
     isOpenable = !isOpenable;
 
@@ -48,11 +50,8 @@ function toggleOpenable(){
 
 
 
-    if(!button) return;
-
-
-
     if(isOpenable){
+
 
         button.textContent =
         "Openable: ON";
@@ -95,12 +94,15 @@ function toggleOpenable(){
 
 
 
+
+
 // ===============================
 // Dashboard
 // ===============================
 
 
 async function loadDashboard(){
+
 
     try{
 
@@ -137,15 +139,18 @@ async function loadDashboard(){
 
         document.getElementById("stats").innerHTML = `
 
+
         <div>
         Total Items:
         <b>${data.length}</b>
         </div>
 
+
         <div>
         Low Stock:
         <b>${lowStock}</b>
         </div>
+
 
         `;
 
@@ -157,7 +162,11 @@ async function loadDashboard(){
 
     }
 
+
 }
+
+
+
 
 
 
@@ -168,6 +177,7 @@ async function loadDashboard(){
 
 
 async function loadCategories(){
+
 
     try{
 
@@ -181,38 +191,51 @@ async function loadCategories(){
 
 
 
-        const select =
-        document.getElementById("category");
+        const selects = [
+
+            document.getElementById("category"),
+
+            document.getElementById("editCategory")
+
+        ];
 
 
 
-        if(!select)
-        return;
+        selects.forEach(select=>{
+
+
+            if(!select)
+            return;
 
 
 
-        select.innerHTML =
-        `
-        <option value="">
-        No category
-        </option>
-        `;
+            select.innerHTML = `
 
-
-
-        categories.forEach(category=>{
-
-
-            select.innerHTML += `
-
-            <option value="${category.id}">
-            ${category.name}
+            <option value="">
+            No category
             </option>
 
             `;
 
 
+
+            categories.forEach(category=>{
+
+
+                select.innerHTML += `
+
+                <option value="${category.id}">
+                ${category.name}
+                </option>
+
+                `;
+
+
+            });
+
+
         });
+
 
 
     }
@@ -228,12 +251,16 @@ async function loadCategories(){
 
 
 
+
+
+
 // ===============================
 // Locations
 // ===============================
 
 
 async function loadLocations(){
+
 
     try{
 
@@ -247,38 +274,52 @@ async function loadLocations(){
 
 
 
-        const select =
-        document.getElementById("location");
+        const selects=[
+
+            document.getElementById("location"),
+
+            document.getElementById("editLocation")
+
+        ];
 
 
 
-        if(!select)
-        return;
+        selects.forEach(select=>{
+
+
+            if(!select)
+            return;
 
 
 
-        select.innerHTML =
-        `
-        <option value="">
-        No location
-        </option>
-        `;
+            select.innerHTML = `
 
-
-
-        locations.forEach(location=>{
-
-
-            select.innerHTML += `
-
-            <option value="${location.id}">
-            ${location.name}
+            <option value="">
+            No location
             </option>
 
             `;
 
 
+
+            locations.forEach(location=>{
+
+
+                select.innerHTML += `
+
+                <option value="${location.id}">
+                ${location.name}
+                </option>
+
+                `;
+
+
+            });
+
+
+
         });
+
 
 
     }
@@ -288,7 +329,12 @@ async function loadLocations(){
 
     }
 
+
 }
+
+
+
+
 
 
 
@@ -299,6 +345,7 @@ async function loadLocations(){
 
 
 async function loadItems(){
+
 
     try{
 
@@ -314,7 +361,9 @@ async function loadItems(){
 
         createTabs();
 
+
         renderItems();
+
 
 
     }
@@ -324,7 +373,15 @@ async function loadItems(){
 
     }
 
+
 }
+
+
+
+
+
+
+
 
 // ===============================
 // Create Tabs
@@ -332,6 +389,7 @@ async function loadItems(){
 
 
 function createTabs(){
+
 
     const locationDiv =
     document.getElementById("locationTabs");
@@ -347,22 +405,28 @@ function createTabs(){
 
 
 
-    const locationList = [
+    const locationList=[
+
 
         "All",
 
         ...new Set(
+
             items
-            .map(item=>item.location)
+
+            .map(i=>i.location)
+
             .filter(Boolean)
+
         )
+
 
     ];
 
 
 
     locationDiv.innerHTML =
-    "<b>Locations:</b> ";
+    "<b>Locations:</b>";
 
 
 
@@ -371,11 +435,13 @@ function createTabs(){
 
         locationDiv.innerHTML += `
 
+
         <button onclick="selectLocation('${location}')">
 
         ${location}
 
         </button>
+
 
         `;
 
@@ -385,7 +451,8 @@ function createTabs(){
 
 
 
-    const categoryList = [
+    const categoryList=[
+
 
         "All",
 
@@ -393,26 +460,27 @@ function createTabs(){
 
             items
 
-            .filter(item =>
+            .filter(i=>
 
                 selectedLocation==="All" ||
 
-                item.location===selectedLocation
+                i.location===selectedLocation
 
             )
 
-            .map(item=>item.category)
+            .map(i=>i.category)
 
             .filter(Boolean)
 
         )
+
 
     ];
 
 
 
     categoryDiv.innerHTML =
-    "<b>Categories:</b> ";
+    "<b>Categories:</b>";
 
 
 
@@ -421,11 +489,13 @@ function createTabs(){
 
         categoryDiv.innerHTML += `
 
+
         <button onclick="selectCategory('${category}')">
 
         ${category}
 
         </button>
+
 
         `;
 
@@ -433,7 +503,9 @@ function createTabs(){
     });
 
 
+
 }
+
 
 
 
@@ -449,7 +521,6 @@ function searchItems(){
 
     const box =
     document.getElementById("searchBox");
-
 
 
     if(!box)
@@ -470,6 +541,9 @@ function searchItems(){
 
 
 
+
+
+
 // ===============================
 // Filters
 // ===============================
@@ -477,16 +551,20 @@ function searchItems(){
 
 function selectLocation(location){
 
-    selectedLocation = location;
+
+    selectedLocation =
+    location;
 
 
-    selectedCategory = "All";
+    selectedCategory =
+    "All";
 
 
     createTabs();
 
 
     renderItems();
+
 
 }
 
@@ -495,16 +573,15 @@ function selectLocation(location){
 
 function selectCategory(category){
 
-    selectedCategory = category;
+
+    selectedCategory =
+    category;
 
 
     renderItems();
 
+
 }
-
-
-
-
 
 // ===============================
 // Render Items
@@ -518,13 +595,13 @@ function renderItems(){
     document.getElementById("items");
 
 
-
     if(!container)
     return;
 
 
 
-    let filtered = items.filter(item=>{
+    let filtered =
+    items.filter(item=>{
 
 
         return (
@@ -548,7 +625,9 @@ function renderItems(){
         &&
 
         item.name
+
         .toLowerCase()
+
         .includes(searchText);
 
 
@@ -557,16 +636,16 @@ function renderItems(){
 
 
 
-    let html = "";
+    let html="";
 
 
 
     if(filtered.length===0){
 
-        html =
-        "<p>No items found</p>";
+        html="<p>No items found</p>";
 
     }
+
 
 
 
@@ -574,6 +653,7 @@ function renderItems(){
 
 
         html += `
+
 
         <div class="item">
 
@@ -612,24 +692,11 @@ function renderItems(){
             ${item.unopened_quantity || 0}
             ${item.unit}
 
-
             <br>
-
 
             Opened:
             ${item.opened_quantity || 0}
             ${item.unit}
-
-
-            <br><br>
-
-
-            <button onclick="openOne(${item.id})">
-
-            Open 1
-
-            </button>
-
 
             `
 
@@ -643,7 +710,6 @@ function renderItems(){
             ${item.quantity}
             ${item.unit}
 
-
             `
 
         }
@@ -651,6 +717,34 @@ function renderItems(){
 
 
         <br><br>
+
+
+        <div class="itemButtons">
+
+
+
+        ${
+            item.openable == 1
+
+            ?
+
+            `
+
+            <button onclick="openOne(${item.id})">
+
+            Open 1
+
+            </button>
+
+            `
+
+            :
+
+            ""
+
+        }
+
+
 
 
         <button onclick="removeOne(${item.id})">
@@ -661,11 +755,27 @@ function renderItems(){
 
 
 
+
+
+        <button onclick="editItem(${item.id})">
+
+        Edit
+
+        </button>
+
+
+
+
+
         <button onclick="deleteItem(${item.id})">
 
         Delete
 
         </button>
+
+
+
+        </div>
 
 
 
@@ -682,10 +792,14 @@ function renderItems(){
 
 
 
-    container.innerHTML = html;
+    container.innerHTML =
+    html;
 
 
 }
+
+
+
 
 
 
@@ -699,66 +813,69 @@ function renderItems(){
 async function addItem(){
 
 
-    const quantity = isOpenable
+    const quantity =
+
+    isOpenable
 
     ?
 
-    Number(
-        document.getElementById("unopenedQuantity").value
-    )
+    Number(document.getElementById("unopenedQuantity").value)
 
     +
 
-    Number(
-        document.getElementById("openedQuantity").value
-    )
+    Number(document.getElementById("openedQuantity").value)
 
 
     :
 
-
-    Number(
-        document.getElementById("quantity").value
-    );
+    Number(document.getElementById("quantity").value);
 
 
 
-    const item = {
+
+    const item={
 
 
         name:
         document.getElementById("name").value,
 
 
-        quantity: quantity,
+        quantity,
 
 
         unit:
         document.getElementById("unit").value,
 
 
+
         minimum_quantity:
+
         Number(
-            document.getElementById("minimum").value
+        document.getElementById("minimum").value
         ),
 
 
 
         category_id:
+
         Number(
-            document.getElementById("category").value
-        ) || null,
+        document.getElementById("category").value
+        )
+        || null,
 
 
 
         location_id:
+
         Number(
-            document.getElementById("location").value
-        ) || null,
+        document.getElementById("location").value
+        )
+        || null,
 
 
 
         openable:
+
         isOpenable ? 1 : 0,
 
 
@@ -770,7 +887,7 @@ async function addItem(){
         ?
 
         Number(
-            document.getElementById("openedQuantity").value
+        document.getElementById("openedQuantity").value
         )
 
         :
@@ -786,7 +903,7 @@ async function addItem(){
         ?
 
         Number(
-            document.getElementById("unopenedQuantity").value
+        document.getElementById("unopenedQuantity").value
         )
 
         :
@@ -797,7 +914,9 @@ async function addItem(){
 
         notes:""
 
+
     };
+
 
 
 
@@ -814,7 +933,9 @@ async function addItem(){
 
 
         body:
+
         JSON.stringify(item)
+
 
     });
 
@@ -823,6 +944,302 @@ async function addItem(){
     await loadItems();
 
     await loadDashboard();
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// EDIT ITEM
+// ===============================
+
+
+function editItem(id){
+
+
+    const item =
+    items.find(i=>i.id==id);
+
+
+
+    if(!item)
+    return;
+
+
+
+    document.getElementById("editBox")
+    .style.display="block";
+
+
+
+    document.getElementById("editId")
+    .value=item.id;
+
+
+
+    document.getElementById("editName")
+    .value=item.name;
+
+
+
+    document.getElementById("editQuantity")
+    .value=item.quantity;
+
+
+
+    document.getElementById("editUnit")
+    .value=item.unit;
+
+
+
+    document.getElementById("editMinimum")
+    .value=item.minimum_quantity;
+
+
+
+    document.getElementById("editCategory")
+    .value=item.category_id || "";
+
+
+
+    document.getElementById("editLocation")
+    .value=item.location_id || "";
+
+
+
+    document.getElementById("editOpenable")
+    .checked=item.openable==1;
+
+
+
+    document.getElementById("editOpened")
+    .value=item.opened_quantity || 0;
+
+
+
+    document.getElementById("editUnopened")
+    .value=item.unopened_quantity || 0;
+
+
+
+    toggleEditOpen();
+
+
+}
+
+
+
+
+
+
+function toggleEditOpen(){
+
+
+    const checked =
+    document.getElementById("editOpenable").checked;
+
+
+
+    document.getElementById("editOpenFields")
+    .style.display =
+
+    checked
+
+    ?
+
+    "block"
+
+    :
+
+    "none";
+
+
+}
+
+
+
+document.addEventListener(
+"change",
+(e)=>{
+
+
+    if(
+        e.target.id==="editOpenable"
+    ){
+
+        toggleEditOpen();
+
+    }
+
+
+});
+
+
+
+
+
+
+
+
+async function saveEdit(){
+
+
+    const id =
+    document.getElementById("editId").value;
+
+
+
+    const openable =
+    document.getElementById("editOpenable").checked
+    ? 1
+    : 0;
+
+
+
+    let quantity =
+    Number(
+    document.getElementById("editQuantity").value
+    );
+
+
+
+    if(openable){
+
+
+        quantity =
+
+        Number(
+        document.getElementById("editOpened").value
+        )
+
+        +
+
+        Number(
+        document.getElementById("editUnopened").value
+        );
+
+
+    }
+
+
+
+    const item={
+
+
+        name:
+        document.getElementById("editName").value,
+
+
+        quantity,
+
+
+        unit:
+        document.getElementById("editUnit").value,
+
+
+        minimum_quantity:
+
+        Number(
+        document.getElementById("editMinimum").value
+        ),
+
+
+
+        category_id:
+
+        Number(
+        document.getElementById("editCategory").value
+        )
+        || null,
+
+
+
+        location_id:
+
+        Number(
+        document.getElementById("editLocation").value
+        )
+        || null,
+
+
+
+        openable,
+
+
+        opened_quantity:
+
+        Number(
+        document.getElementById("editOpened").value
+        ),
+
+
+
+        unopened_quantity:
+
+        Number(
+        document.getElementById("editUnopened").value
+        ),
+
+
+
+        notes:""
+
+
+    };
+
+
+
+    await fetch(
+
+        API+"/items/"+id,
+
+        {
+
+        method:"PUT",
+
+        headers:{
+
+        "Content-Type":
+        "application/json"
+
+        },
+
+
+        body:
+
+        JSON.stringify(item)
+
+
+        }
+
+    );
+
+
+
+    cancelEdit();
+
+
+    await loadItems();
+
+    await loadDashboard();
+
+
+}
+
+
+
+
+function cancelEdit(){
+
+
+    document.getElementById("editBox")
+    .style.display="none";
 
 
 }
@@ -850,7 +1267,7 @@ async function openOne(id){
     ){
 
         alert(
-        "No unopened items"
+            "No unopened items"
         );
 
         return;
@@ -875,22 +1292,41 @@ async function openOne(id){
         },
 
 
-        body:
+        body:JSON.stringify({
 
-        JSON.stringify({
-
-            unopened_quantity:
-            Number(item.unopened_quantity) - 1,
+            quantity:
+            Number(item.quantity),
 
 
             opened_quantity:
-            Number(item.opened_quantity || 0) + 1,
+
+            Number(item.opened_quantity || 0)
+            + 1,
 
 
-            quantity:
-            Number(item.quantity) - 0
+
+            unopened_quantity:
+
+            Number(item.unopened_quantity)
+            - 1,
+
+
+            name:item.name,
+
+            category_id:item.category_id,
+
+            location_id:item.location_id,
+
+            unit:item.unit,
+
+            minimum_quantity:item.minimum_quantity,
+
+            openable:1,
+
+            notes:item.notes || ""
 
         })
+
 
         }
 
@@ -904,6 +1340,9 @@ async function openOne(id){
 
 
 }
+
+
+
 
 
 
@@ -927,11 +1366,14 @@ async function removeOne(id){
 
 
 
+
     if(item.openable == 1){
+
 
 
         let opened =
         Number(item.opened_quantity || 0);
+
 
 
         let unopened =
@@ -944,11 +1386,13 @@ async function removeOne(id){
             opened--;
 
         }
+
         else if(unopened > 0){
 
             unopened--;
 
         }
+
         else{
 
             return;
@@ -973,16 +1417,28 @@ async function removeOne(id){
             },
 
 
-            body:
+            body:JSON.stringify({
 
-            JSON.stringify({
+                name:item.name,
 
-                opened_quantity: opened,
+                category_id:item.category_id,
 
-                unopened_quantity: unopened,
+                location_id:item.location_id,
+
+                unit:item.unit,
+
+                minimum_quantity:item.minimum_quantity,
+
+                openable:1,
+
+                opened_quantity:opened,
+
+                unopened_quantity:unopened,
 
                 quantity:
-                opened + unopened
+                opened + unopened,
+
+                notes:item.notes || ""
 
             })
 
@@ -994,10 +1450,6 @@ async function removeOne(id){
     }
 
     else{
-
-
-        let quantity =
-        Number(item.quantity) - 1;
 
 
 
@@ -1017,11 +1469,29 @@ async function removeOne(id){
             },
 
 
-            body:
+            body:JSON.stringify({
 
-            JSON.stringify({
+                name:item.name,
 
-                quantity: quantity
+                category_id:item.category_id,
+
+                location_id:item.location_id,
+
+                unit:item.unit,
+
+                minimum_quantity:item.minimum_quantity,
+
+                openable:0,
+
+                quantity:
+                Number(item.quantity)-1,
+
+                opened_quantity:0,
+
+                unopened_quantity:
+                Number(item.quantity)-1,
+
+                notes:item.notes || ""
 
             })
 
@@ -1031,6 +1501,7 @@ async function removeOne(id){
 
 
     }
+
 
 
 
@@ -1045,12 +1516,16 @@ async function removeOne(id){
 
 
 
+
+
+
 // ===============================
 // Delete Item
 // ===============================
 
 
 async function deleteItem(id){
+
 
 
     await fetch(
@@ -1078,6 +1553,10 @@ async function deleteItem(id){
 
 
 
+
+
+
+
 // ===============================
 // Settings
 // ===============================
@@ -1100,17 +1579,19 @@ async function loadSettings(){
 
 
         console.log(
-        "Settings:",
-        window.settings
+            "Settings:",
+            window.settings
         );
 
 
     }
+
     catch(error){
 
         console.log(error);
 
     }
+
 
 }
 
@@ -1118,8 +1599,12 @@ async function loadSettings(){
 
 
 
+
+
+
+
 // ===============================
-// Start App
+// Start
 // ===============================
 
 
@@ -1151,12 +1636,18 @@ start();
 
 
 
+
+
+
+
 // Refresh every second
+
 
 setInterval(()=>{
 
 
     loadItems();
+
 
     loadDashboard();
 
