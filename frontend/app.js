@@ -1630,7 +1630,7 @@ async function start(){
 
 
 
-start();
+
 
 
 
@@ -1709,7 +1709,7 @@ function toggleEditOpenable(){
 
 
 
-
+start();
 
 
 
