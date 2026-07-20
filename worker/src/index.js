@@ -1,4 +1,3 @@
-
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 
@@ -8,61 +7,81 @@ app.use(
   "*",
   cors({
     origin: "*",
-    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type"],
+    allowMethods: [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "OPTIONS"
+    ],
+    allowHeaders: [
+      "Content-Type"
+    ],
   })
 );
 
 
+// ===============================
+// HOME
+// ===============================
+
 app.get("/", (c)=>{
+
     return c.json({
         name:"PantryCloud API",
         status:"running"
     });
+
 });
 
 
+// ===============================
 // SETTINGS
+// ===============================
 
 app.get("/settings", async (c)=>{
 
-    const db=c.env.DB;
+    const db = c.env.DB;
 
-    const result=await db
+    const result = await db
         .prepare(
             "SELECT key,value FROM settings"
         )
         .all();
 
 
-    const settings={};
+    const settings = {};
+
 
     result.results.forEach(row=>{
-        settings[row.key]=row.value==="true";
+
+        settings[row.key] =
+            row.value === "true";
+
     });
 
 
     return c.json(settings);
+
 });
+
 
 
 app.put("/settings/:key", async (c)=>{
 
-    const db=c.env.DB;
+    const db = c.env.DB;
 
-    const key=c.req.param("key");
+    const key = c.req.param("key");
 
-    const body=await c.req.json();
+    const body = await c.req.json();
 
 
-    await db.prepare(
-        `
+    await db.prepare(`
         INSERT INTO settings(key,value)
         VALUES(?,?)
         ON CONFLICT(key)
         DO UPDATE SET value=excluded.value
-        `
-    )
+    `)
     .bind(
         key,
         String(body.value)
@@ -77,12 +96,15 @@ app.put("/settings/:key", async (c)=>{
 });
 
 
-
+// ===============================
 // ITEMS
+// ===============================
 
 
-app.get("/items", async (c) => {
+app.get("/items", async (c)=>{
+
     const db = c.env.DB;
+
 
     const items = await db.prepare(`
         SELECT
@@ -95,69 +117,145 @@ app.get("/items", async (c) => {
         LEFT JOIN locations
             ON locations.id = items.location_id
         ORDER BY items.created_at DESC
-    `).all();
+    `)
+    .all();
+
 
     return c.json(items.results);
+
 });
 
-app.post("/items", async (c) => {
-  try {
-    const db = c.env.DB;
-    const item = await c.req.json();
 
-    await db.prepare(`
-      INSERT INTO items (
-        name,
-        category_id,
-        location_id,
-        quantity,
-        unit,
-        minimum_quantity,
-        notes,
-        expiry_date
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `)
-    .bind(
-      item.name,
-      item.category_id ?? null,
-      item.location_id ?? null,
-      item.quantity ?? 0,
-      item.unit ?? "unit",
-      item.minimum_quantity ?? 0,
-      item.notes ?? "",
-      item.expiry_date ?? null
-    )
-    .run();
 
-    await db.prepare(`
-      INSERT INTO activity_log (
-        action,
-        details
-      )
-      VALUES (?, ?)
-    `)
-    .bind(
-      "Added item",
-      item.name
-    )
-    .run();
+app.post("/items", async (c)=>{
 
-    return c.json({
-      success: true
-    });
+    try {
 
-  } catch (err) {
-    return c.json({
-      success: false,
-      error: err.message
-    }, 500);
-  }
+        const db = c.env.DB;
+
+        const item = await c.req.json();
+
+
+        await db.prepare(`
+            INSERT INTO items
+            (
+                name,
+                category_id,
+                location_id,
+                quantity,
+                unit,
+                minimum_quantity,
+                notes,
+                expiry_date
+            )
+            VALUES(?,?,?,?,?,?,?,?)
+        `)
+        .bind(
+            item.name,
+            item.category_id ?? null,
+            item.location_id ?? null,
+            item.quantity ?? 0,
+            item.unit ?? "unit",
+            item.minimum_quantity ?? 0,
+            item.notes ?? "",
+            item.expiry_date ?? null
+        )
+        .run();
+
+
+        await db.prepare(`
+            INSERT INTO activity_log
+            (
+                action,
+                details
+            )
+            VALUES(?,?)
+        `)
+        .bind(
+            "Added item",
+            item.name
+        )
+        .run();
+
+
+        return c.json({
+            success:true
+        });
+
+
+    } catch(error) {
+
+
+        return c.json({
+
+            success:false,
+            error:error.message
+
+        },500);
+
+    }
+
 });
+
+
+// ===============================
+// REMOVE ONE QUANTITY
+// ===============================
+
+
+app.put("/items/:id", async (c)=>{
+
+    try {
+
+        const db = c.env.DB;
+
+        const id = c.req.param("id");
+
+        const body = await c.req.json();
+
+
+        await db.prepare(`
+            UPDATE items
+            SET quantity = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        `)
+        .bind(
+            body.quantity,
+            id
+        )
+        .run();
+
+
+        return c.json({
+            success:true
+        });
+
+
+    } catch(error) {
+
+
+        return c.json({
+
+            success:false,
+            error:error.message
+
+        },500);
+
+    }
+
+});
+
+
+// ===============================
+// DELETE ITEM
+// ===============================
+
 
 app.delete("/items/:id", async(c)=>{
 
-    const db=c.env.DB;
+    const db = c.env.DB;
+
 
     await db.prepare(
         "DELETE FROM items WHERE id=?"
@@ -174,28 +272,46 @@ app.delete("/items/:id", async(c)=>{
 
 });
 
-app.get("/debug", async (c) => {
-  try {
-    const db = c.env.DB;
 
-    const result = await db.prepare(
-      "SELECT COUNT(*) AS total FROM items"
-    ).first();
+// ===============================
+// DEBUG
+// ===============================
 
-    return c.json({
-      success: true,
-      result
-    });
 
-  } catch (err) {
-    return c.json({
-      success: false,
-      error: err.message,
-      stack: err.stack
-    }, 500);
-  }
+app.get("/debug", async (c)=>{
+
+    try {
+
+        const db = c.env.DB;
+
+
+        const result = await db.prepare(
+            "SELECT COUNT(*) AS total FROM items"
+        )
+        .first();
+
+
+        return c.json({
+
+            success:true,
+            result
+
+        });
+
+
+    } catch(error) {
+
+
+        return c.json({
+
+            success:false,
+            error:error.message
+
+        },500);
+
+    }
+
 });
-
 
 
 export default app;
