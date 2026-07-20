@@ -14,6 +14,12 @@ let categories = [];
 let locations = [];
 
 
+let selectedLocation = "All";
+
+let selectedCategory = "All";
+
+
+
 // ===============================
 // Dashboard
 // ===============================
@@ -24,11 +30,11 @@ async function loadDashboard(){
     try {
 
         const response =
-            await fetch(API + "/items");
+        await fetch(API + "/items");
 
 
         const data =
-            await response.json();
+        await response.json();
 
 
         let lowStock = 0;
@@ -51,15 +57,16 @@ async function loadDashboard(){
 
         document.getElementById("stats").innerHTML = `
 
-            <div>
-                Total Items:
-                <b>${data.length}</b>
-            </div>
+        <div>
+        Total Items:
+        <b>${data.length}</b>
+        </div>
 
-            <div>
-                Low Stock:
-                <b>${lowStock}</b>
-            </div>
+
+        <div>
+        Low Stock:
+        <b>${lowStock}</b>
+        </div>
 
         `;
 
@@ -76,7 +83,7 @@ async function loadDashboard(){
 
 
 // ===============================
-// Categories
+// Load Categories
 // ===============================
 
 
@@ -85,16 +92,18 @@ async function loadCategories(){
     try {
 
         const response =
-            await fetch(API + "/categories");
+        await fetch(API + "/categories");
 
 
         categories =
-            await response.json();
-
+        await response.json();
 
 
         const select =
-            document.getElementById("category");
+        document.getElementById("category");
+
+
+        if(!select) return;
 
 
         select.innerHTML =
@@ -105,16 +114,17 @@ async function loadCategories(){
         `;
 
 
-
         categories.forEach(category=>{
+
 
             select.innerHTML += `
 
             <option value="${category.id}">
-                ${category.name}
+            ${category.name}
             </option>
 
             `;
+
 
         });
 
@@ -131,7 +141,7 @@ async function loadCategories(){
 
 
 // ===============================
-// Locations
+// Load Locations
 // ===============================
 
 
@@ -139,17 +149,21 @@ async function loadLocations(){
 
     try {
 
+
         const response =
-            await fetch(API + "/locations");
+        await fetch(API + "/locations");
 
 
         locations =
-            await response.json();
+        await response.json();
 
 
 
         const select =
-            document.getElementById("location");
+        document.getElementById("location");
+
+
+        if(!select) return;
 
 
         select.innerHTML =
@@ -160,18 +174,20 @@ async function loadLocations(){
         `;
 
 
-
         locations.forEach(location=>{
+
 
             select.innerHTML += `
 
             <option value="${location.id}">
-                ${location.name}
+            ${location.name}
             </option>
 
             `;
 
+
         });
+
 
 
     }
@@ -182,6 +198,7 @@ async function loadLocations(){
     }
 
 }
+
 
 
 
@@ -196,95 +213,18 @@ async function loadItems(){
 
 
         const response =
-            await fetch(API + "/items");
+        await fetch(API + "/items");
 
 
         items =
-            await response.json();
+        await response.json();
 
 
 
-        let html = "";
+        createTabs();
 
 
-
-        if(items.length === 0){
-
-            html =
-            "<p>No items found</p>";
-
-        }
-
-
-
-        items.forEach(item=>{
-
-
-            html += `
-
-            <div class="item">
-
-
-            <b>
-            ${item.name}
-            </b>
-
-
-            <br>
-
-
-            Quantity:
-            ${item.quantity}
-            ${item.unit}
-
-
-
-            <br>
-
-
-            Category:
-            ${item.category || "None"}
-
-
-
-            <br>
-
-
-            Location:
-            ${item.location || "None"}
-
-
-
-            <br><br>
-
-
-
-            <button onclick="removeOne(${item.id})">
-            Remove one
-            </button>
-
-
-
-            <button onclick="deleteItem(${item.id})">
-            Delete
-            </button>
-
-
-
-            </div>
-
-
-            <br>
-
-            `;
-
-
-        });
-
-
-
-        document.getElementById("items")
-        .innerHTML = html;
+        renderItems();
 
 
     }
@@ -295,6 +235,272 @@ async function loadItems(){
     }
 
 }
+
+
+
+// ===============================
+// Create Tabs
+// ===============================
+
+
+function createTabs(){
+
+
+    const locationDiv =
+    document.getElementById("locationTabs");
+
+
+    const categoryDiv =
+    document.getElementById("categoryTabs");
+
+
+
+    if(!locationDiv || !categoryDiv)
+    return;
+
+
+
+    let locationList = [
+
+        "All",
+
+        ...new Set(
+            items
+            .map(i=>i.location)
+            .filter(Boolean)
+        )
+
+    ];
+
+
+
+    locationDiv.innerHTML =
+    "<b>Locations:</b> ";
+
+
+
+    locationList.forEach(location=>{
+
+
+        locationDiv.innerHTML += `
+
+        <button onclick="selectLocation('${location}')">
+
+        ${location}
+
+        </button>
+
+        `;
+
+
+    });
+
+
+
+
+    let categoryList = [
+
+        "All",
+
+        ...new Set(
+
+            items
+            .filter(item=>
+
+                selectedLocation==="All" ||
+                item.location===selectedLocation
+
+            )
+            .map(i=>i.category)
+            .filter(Boolean)
+
+        )
+
+    ];
+
+
+
+    categoryDiv.innerHTML =
+    "<b>Categories:</b> ";
+
+
+
+    categoryList.forEach(category=>{
+
+
+        categoryDiv.innerHTML += `
+
+        <button onclick="selectCategory('${category}')">
+
+        ${category}
+
+        </button>
+
+        `;
+
+
+    });
+
+
+}
+
+
+
+
+// ===============================
+// Select Tabs
+// ===============================
+
+
+function selectLocation(location){
+
+    selectedLocation = location;
+
+    selectedCategory = "All";
+
+    createTabs();
+
+    renderItems();
+
+}
+
+
+
+function selectCategory(category){
+
+    selectedCategory = category;
+
+    renderItems();
+
+}
+
+
+
+
+// ===============================
+// Render Items
+// ===============================
+
+
+function renderItems(){
+
+
+    const container =
+    document.getElementById("items");
+
+
+    if(!container)
+    return;
+
+
+
+    let filtered =
+    items.filter(item=>{
+
+
+        let locationMatch =
+
+        selectedLocation==="All" ||
+
+        item.location===selectedLocation;
+
+
+
+        let categoryMatch =
+
+        selectedCategory==="All" ||
+
+        item.category===selectedCategory;
+
+
+
+        return locationMatch && categoryMatch;
+
+
+    });
+
+
+
+    let html="";
+
+
+
+    if(filtered.length===0){
+
+        html =
+        "<p>No items found</p>";
+
+    }
+
+
+
+    filtered.forEach(item=>{
+
+
+        html += `
+
+        <div class="item">
+
+
+        <b>
+        ${item.name}
+        </b>
+
+
+        <br>
+
+
+        Quantity:
+        ${item.quantity}
+        ${item.unit}
+
+
+        <br>
+
+
+        Category:
+        ${item.category || "None"}
+
+
+        <br>
+
+
+        Location:
+        ${item.location || "None"}
+
+
+        <br><br>
+
+
+
+        <button onclick="removeOne(${item.id})">
+        Remove one
+        </button>
+
+
+
+        <button onclick="deleteItem(${item.id})">
+        Delete
+        </button>
+
+
+        </div>
+
+
+        <br>
+
+        `;
+
+
+    });
+
+
+
+    container.innerHTML = html;
+
+
+}
+
 
 
 
@@ -315,7 +521,7 @@ async function addItem(){
 
         quantity:
         Number(
-            document.getElementById("quantity").value
+        document.getElementById("quantity").value
         ),
 
 
@@ -325,23 +531,20 @@ async function addItem(){
 
         minimum_quantity:
         Number(
-            document.getElementById("minimum").value
+        document.getElementById("minimum").value
         ),
-
 
 
         category_id:
         Number(
-            document.getElementById("category").value
+        document.getElementById("category").value
         ) || null,
-
 
 
         location_id:
         Number(
-            document.getElementById("location").value
+        document.getElementById("location").value
         ) || null,
-
 
 
         notes:""
@@ -353,9 +556,7 @@ async function addItem(){
 
     if(!item.name){
 
-        alert(
-        "Enter item name"
-        );
+        alert("Enter item name");
 
         return;
 
@@ -369,33 +570,21 @@ async function addItem(){
 
         {
 
-            method:"POST",
+        method:"POST",
 
+        headers:{
 
-            headers:{
+            "Content-Type":
+            "application/json"
 
-                "Content-Type":
-                "application/json"
+        },
 
-            },
-
-
-            body:
-            JSON.stringify(item)
+        body:
+        JSON.stringify(item)
 
         }
 
     );
-
-
-
-    document.getElementById("name").value="";
-
-    document.getElementById("quantity").value="";
-
-    document.getElementById("unit").value="";
-
-    document.getElementById("minimum").value="";
 
 
 
@@ -408,8 +597,9 @@ async function addItem(){
 
 
 
+
 // ===============================
-// Remove One Quantity
+// Remove One
 // ===============================
 
 
@@ -418,25 +608,22 @@ async function removeOne(id){
 
     const item =
     items.find(
-        i=>i.id == id
+        i=>i.id==id
     );
 
 
 
-    if(!item){
-
-        return;
-
-    }
+    if(!item)
+    return;
 
 
 
-    const newQuantity =
+    let quantity =
     item.quantity - 1;
 
 
 
-    if(newQuantity <= 0){
+    if(quantity <= 0){
 
 
         await deleteItem(id);
@@ -448,28 +635,27 @@ async function removeOne(id){
 
         await fetch(
 
-            API + "/items/" + id,
+            API+"/items/"+id,
 
             {
 
-                method:"PUT",
+            method:"PUT",
+
+            headers:{
+
+            "Content-Type":
+            "application/json"
+
+            },
 
 
-                headers:{
+            body:
+            JSON.stringify({
 
-                    "Content-Type":
-                    "application/json"
+            quantity:quantity
 
-                },
+            })
 
-
-                body:
-
-                JSON.stringify({
-
-                    quantity:newQuantity
-
-                })
 
             }
 
@@ -489,8 +675,9 @@ async function removeOne(id){
 
 
 
+
 // ===============================
-// Delete Item
+// Delete
 // ===============================
 
 
@@ -499,15 +686,16 @@ async function deleteItem(id){
 
     await fetch(
 
-        API + "/items/" + id,
+        API+"/items/"+id,
 
         {
 
-            method:"DELETE"
+        method:"DELETE"
 
         }
 
     );
+
 
 
     await loadItems();
@@ -516,6 +704,7 @@ async function deleteItem(id){
 
 
 }
+
 
 
 
@@ -530,17 +719,16 @@ async function loadSettings(){
 
 
         const response =
-        await fetch(API + "/settings");
+        await fetch(API+"/settings");
 
 
         window.settings =
         await response.json();
 
 
-
         console.log(
-            "Settings:",
-            window.settings
+        "Settings:",
+        window.settings
         );
 
 
@@ -562,7 +750,6 @@ async function loadSettings(){
 
 async function start(){
 
-
     await loadSettings();
 
     await loadCategories();
@@ -572,7 +759,6 @@ async function start(){
     await loadItems();
 
     await loadDashboard();
-
 
 }
 
