@@ -139,12 +139,13 @@ async function loadItems(){
 
             <br>
 
-            
+
             <button onclick="removeOne(${item.id})">
               -1
             </button>
 
 
+            <br>
             <br>
 
 
