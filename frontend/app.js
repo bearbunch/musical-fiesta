@@ -139,6 +139,14 @@ async function loadItems(){
 
             <br>
 
+            
+            <button onclick="removeOne(${item.id})">
+              -1
+            </button>
+
+
+            <br>
+
 
             <button onclick="deleteItem(${item.id})">
             Delete
@@ -345,6 +353,33 @@ async function loadSettings(){
 
 }
 
+async function removeOne(id) {
+
+    const item = items.find(i => i.id === id);
+
+    if (!item) return;
+
+    const newQuantity = item.quantity - 1;
+
+    if (newQuantity <= 0) {
+        await fetch(`${API}/items/${id}`, {
+            method: "DELETE"
+        });
+    } else {
+        await fetch(`${API}/items/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                quantity: newQuantity
+            })
+        });
+    }
+
+    loadItems();
+}
+
 
 
 // ===============================
@@ -369,3 +404,7 @@ async function start(){
 
 
 start();
+
+setInterval(() => {
+    loadItems();
+}, 1000);
