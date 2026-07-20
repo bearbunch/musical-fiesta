@@ -21,18 +21,78 @@ let selectedCategory = "All";
 let searchText = "";
 
 
+let isOpenable = false;
+
+
+
+// ===============================
+// Openable Toggle Button
+// ===============================
+
+
+function toggleOpenable(){
+
+
+    isOpenable = !isOpenable;
+
+
+    const button =
+    document.getElementById("openableButton");
+
+
+
+    if(isOpenable){
+
+
+        button.innerHTML =
+        "Openable: ON";
+
+
+        button.classList.add("active");
+
+
+
+        document.getElementById(
+            "openQuantityFields"
+        ).style.display="block";
+
+
+    }
+    else{
+
+
+        button.innerHTML =
+        "Openable: OFF";
+
+
+        button.classList.remove("active");
+
+
+
+        document.getElementById(
+            "openQuantityFields"
+        ).style.display="none";
+
+
+    }
+
+}
+
+
 
 // ===============================
 // Dashboard
 // ===============================
 
+
 async function loadDashboard(){
 
-    try {
+
+    try{
+
 
         const response =
-        await fetch(API + "/items");
-
+        await fetch(API+"/items");
 
         const data =
         await response.json();
@@ -43,6 +103,7 @@ async function loadDashboard(){
 
         data.forEach(item=>{
 
+
             if(
                 item.minimum_quantity > 0 &&
                 item.quantity <= item.minimum_quantity
@@ -52,20 +113,25 @@ async function loadDashboard(){
 
             }
 
+
         });
 
 
+
         document.getElementById("stats").innerHTML = `
+
 
         <div>
         Total Items:
         <b>${data.length}</b>
         </div>
 
+
         <div>
         Low Stock:
         <b>${lowStock}</b>
         </div>
+
 
         `;
 
@@ -86,14 +152,17 @@ async function loadDashboard(){
 // Categories
 // ===============================
 
+
 async function loadCategories(){
 
+
     const response =
-    await fetch(API + "/categories");
+    await fetch(API+"/categories");
 
 
     categories =
     await response.json();
+
 
 
     const select =
@@ -101,6 +170,7 @@ async function loadCategories(){
 
 
     if(!select) return;
+
 
 
     select.innerHTML =
@@ -111,7 +181,9 @@ async function loadCategories(){
     `;
 
 
+
     categories.forEach(category=>{
+
 
         select.innerHTML += `
 
@@ -121,7 +193,9 @@ async function loadCategories(){
 
         `;
 
+
     });
+
 
 }
 
@@ -132,14 +206,17 @@ async function loadCategories(){
 // Locations
 // ===============================
 
+
 async function loadLocations(){
 
+
     const response =
-    await fetch(API + "/locations");
+    await fetch(API+"/locations");
 
 
     locations =
     await response.json();
+
 
 
     const select =
@@ -147,6 +224,7 @@ async function loadLocations(){
 
 
     if(!select) return;
+
 
 
     select.innerHTML =
@@ -157,7 +235,9 @@ async function loadLocations(){
     `;
 
 
+
     locations.forEach(location=>{
+
 
         select.innerHTML += `
 
@@ -167,10 +247,11 @@ async function loadLocations(){
 
         `;
 
+
     });
 
-}
 
+}
 
 
 
@@ -179,21 +260,27 @@ async function loadLocations(){
 // Load Items
 // ===============================
 
+
 async function loadItems(){
 
-    try {
+
+    try{
+
 
         const response =
-        await fetch(API + "/items");
+        await fetch(API+"/items");
 
 
         items =
         await response.json();
 
 
+
         createTabs();
 
+
         renderItems();
+
 
 
     }
@@ -203,14 +290,14 @@ async function loadItems(){
 
     }
 
+
 }
 
 
-
-
 // ===============================
-// Tabs
+// Create Tabs
 // ===============================
+
 
 function createTabs(){
 
@@ -221,6 +308,7 @@ function createTabs(){
 
     const categoryDiv =
     document.getElementById("categoryTabs");
+
 
 
     if(!locationDiv || !categoryDiv)
@@ -260,7 +348,9 @@ function createTabs(){
 
         `;
 
+
     });
+
 
 
 
@@ -311,7 +401,10 @@ function createTabs(){
 
     });
 
+
 }
+
+
 
 
 
@@ -319,15 +412,22 @@ function createTabs(){
 // Search
 // ===============================
 
+
 function searchItems(){
 
+
     searchText =
+
     document.getElementById("searchBox")
+
     .value
+
     .toLowerCase();
 
 
+
     renderItems();
+
 
 }
 
@@ -336,18 +436,24 @@ function searchItems(){
 
 
 // ===============================
-// Select Filters
+// Filter Buttons
 // ===============================
+
 
 function selectLocation(location){
 
+
     selectedLocation = location;
+
 
     selectedCategory = "All";
 
+
     createTabs();
 
+
     renderItems();
+
 
 }
 
@@ -355,11 +461,15 @@ function selectLocation(location){
 
 function selectCategory(category){
 
+
     selectedCategory = category;
+
 
     renderItems();
 
+
 }
+
 
 
 
@@ -368,6 +478,7 @@ function selectCategory(category){
 // Display Items
 // ===============================
 
+
 function renderItems(){
 
 
@@ -375,46 +486,30 @@ function renderItems(){
     document.getElementById("items");
 
 
-    if(!container)
-    return;
-
-
-
     let filtered =
+
     items.filter(item=>{
-
-
-        let locationMatch =
-
-        selectedLocation==="All" ||
-
-        item.location===selectedLocation;
-
-
-
-        let categoryMatch =
-
-        selectedCategory==="All" ||
-
-        item.category===selectedCategory;
-
-
-
-        let searchMatch =
-
-        item.name
-        .toLowerCase()
-        .includes(searchText);
-
 
 
         return (
 
-            locationMatch &&
+            (selectedLocation==="All" ||
+            item.location===selectedLocation)
 
-            categoryMatch &&
 
-            searchMatch
+            &&
+
+
+            (selectedCategory==="All" ||
+            item.category===selectedCategory)
+
+
+            &&
+
+
+            item.name
+            .toLowerCase()
+            .includes(searchText)
 
         );
 
@@ -423,14 +518,14 @@ function renderItems(){
 
 
 
-    let html = "";
+
+    let html="";
 
 
 
     if(filtered.length===0){
 
-        html =
-        "<p>No items found</p>";
+        html="<p>No items found</p>";
 
     }
 
@@ -443,38 +538,96 @@ function renderItems(){
 
         <div class="item">
 
-        <b>${item.name}</b>
+
+        <b>
+        ${item.name}
+        </b>
+
 
         <br>
+
+
+        Category:
+        ${item.category || "None"}
+
+
+        <br>
+
+
+        Location:
+        ${item.location || "None"}
+
+
+        <br>
+
+
+        ${
+        item.openable == 1
+
+        ?
+
+        `
+
+        Unopened:
+        ${item.unopened_quantity}
+        ${item.unit}
+
+
+        <br>
+
+
+        Opened:
+        ${item.opened_quantity}
+        ${item.unit}
+
+
+        <br><br>
+
+
+        <button onclick="openOne(${item.id})">
+
+        Open 1
+
+        </button>
+
+        `
+
+        :
+
+        `
 
         Quantity:
         ${item.quantity}
         ${item.unit}
 
-        <br>
+        `
 
-        Category:
-        ${item.category || "None"}
+        }
 
-        <br>
 
-        Location:
-        ${item.location || "None"}
 
         <br><br>
 
 
         <button onclick="removeOne(${item.id})">
+
         Remove one
+
         </button>
+
 
 
         <button onclick="deleteItem(${item.id})">
+
         Delete
+
         </button>
 
 
+
         </div>
+
+        <br>
 
         `;
 
@@ -491,9 +644,11 @@ function renderItems(){
 
 
 
+
 // ===============================
 // Add Item
 // ===============================
+
 
 async function addItem(){
 
@@ -521,10 +676,12 @@ async function addItem(){
         ),
 
 
+
         category_id:
         Number(
         document.getElementById("category").value
         ) || null,
+
 
 
         location_id:
@@ -533,25 +690,64 @@ async function addItem(){
         ) || null,
 
 
+
+        openable:
+        isOpenable ? 1 : 0,
+
+
+
+        opened_quantity:
+        Number(
+        document.getElementById("openedQuantity").value
+        ) || 0,
+
+
+
+        unopened_quantity:
+
+        Number(
+        document.getElementById("unopenedQuantity").value
+        )
+
+        ||
+
+        Number(
+        document.getElementById("quantity").value
+        ),
+
+
+
         notes:""
+
 
     };
 
 
 
-    await fetch(API+"/items",{
+    await fetch(
+
+        API+"/items",
+
+        {
 
         method:"POST",
 
         headers:{
+
             "Content-Type":
             "application/json"
+
         },
+
 
         body:
         JSON.stringify(item)
 
-    });
+
+        }
+
+    );
+
 
 
     await loadItems();
@@ -566,16 +762,91 @@ async function addItem(){
 
 
 // ===============================
+// Open One
+// ===============================
+
+
+async function openOne(id){
+
+
+    const item =
+    items.find(i=>i.id==id);
+
+
+
+    if(!item)
+    return;
+
+
+
+    if(item.unopened_quantity <= 0){
+
+        alert(
+        "No unopened items"
+        );
+
+        return;
+
+    }
+
+
+
+    await fetch(
+
+        API+"/items/"+id,
+
+        {
+
+        method:"PUT",
+
+        headers:{
+
+        "Content-Type":
+        "application/json"
+
+        },
+
+
+        body:
+
+        JSON.stringify({
+
+            unopened_quantity:
+            item.unopened_quantity - 1,
+
+
+            opened_quantity:
+            item.opened_quantity + 1
+
+
+        })
+
+
+        }
+
+    );
+
+
+    await loadItems();
+
+
+}
+
+
+
+
+
+// ===============================
 // Remove One
 // ===============================
+
 
 async function removeOne(id){
 
 
     const item =
-    items.find(
-        i=>i.id==id
-    );
+    items.find(i=>i.id==id);
+
 
 
     if(!item)
@@ -585,16 +856,6 @@ async function removeOne(id){
 
     let quantity =
     item.quantity - 1;
-
-
-
-    if(quantity<=0){
-
-        await deleteItem(id);
-
-        return;
-
-    }
 
 
 
@@ -630,14 +891,17 @@ async function removeOne(id){
 
     await loadItems();
 
+
 }
 
 
 
 
+
 // ===============================
-// Delete
+// Delete Item
 // ===============================
+
 
 async function deleteItem(id){
 
@@ -655,9 +919,11 @@ async function deleteItem(id){
     );
 
 
+
     await loadItems();
 
     await loadDashboard();
+
 
 }
 
@@ -669,7 +935,9 @@ async function deleteItem(id){
 // Settings
 // ===============================
 
+
 async function loadSettings(){
+
 
     const response =
     await fetch(API+"/settings");
@@ -680,11 +948,13 @@ async function loadSettings(){
 
 
     console.log(
-        "Settings:",
-        window.settings
+    "Settings:",
+    window.settings
     );
 
+
 }
+
 
 
 
@@ -693,16 +963,21 @@ async function loadSettings(){
 // Start
 // ===============================
 
+
 async function start(){
 
 
     await loadSettings();
 
+
     await loadCategories();
+
 
     await loadLocations();
 
+
     await loadItems();
+
 
     await loadDashboard();
 
@@ -715,12 +990,15 @@ start();
 
 
 
-// Auto refresh
+
+// Refresh every second
 
 setInterval(()=>{
+
 
     loadItems();
 
     loadDashboard();
+
 
 },1000);
