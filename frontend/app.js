@@ -40,6 +40,22 @@ function toggleOpenable(){
     document.getElementById("openableButton");
 
 
+    const fields =
+    document.getElementById("openQuantityFields");
+
+
+
+    if(!button){
+
+        console.error(
+        "openableButton missing"
+        );
+
+        return;
+
+    }
+
+
 
     if(isOpenable){
 
@@ -51,10 +67,11 @@ function toggleOpenable(){
         button.classList.add("active");
 
 
+        if(fields){
 
-        document.getElementById(
-            "openQuantityFields"
-        ).style.display="block";
+            fields.style.display="block";
+
+        }
 
 
     }
@@ -68,10 +85,11 @@ function toggleOpenable(){
         button.classList.remove("active");
 
 
+        if(fields){
 
-        document.getElementById(
-            "openQuantityFields"
-        ).style.display="none";
+            fields.style.display="none";
+
+        }
 
 
     }
