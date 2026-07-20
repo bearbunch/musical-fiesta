@@ -208,182 +208,153 @@ Add Item
 
 <!-- EDIT ITEM FORM -->
 
-<div
-id="editBox"
-style="display:none;">
-
+<hr>
 
 <h2>Edit Item</h2>
 
+<div class="form" id="editBox" style="display:none;">
 
-<div class="form">
+    <input type="hidden" id="editId">
 
 
+    <label>
+        Item Name
+    </label>
 
-<input
-id="editId"
-type="hidden">
+    <input
+        id="editName"
+        type="text">
 
 
 
+    <div id="editNormalQuantity">
 
+        <label>
+            Quantity
+        </label>
 
-<label>
-Item Name
-</label>
+        <input
+            id="editQuantity"
+            type="number"
+            min="0">
 
+    </div>
 
-<input
-id="editName">
 
 
 
+    <div id="editOpenFields" style="display:none;">
 
+        <label>
+            Unopened Quantity
+        </label>
 
-<label>
-Quantity
-</label>
+        <input
+            id="editUnopened"
+            type="number"
+            min="0">
 
 
-<input
-id="editQuantity"
-type="number">
+        <label>
+            Opened Quantity
+        </label>
 
+        <input
+            id="editOpened"
+            type="number"
+            min="0">
 
 
+    </div>
 
 
-<label>
-Unit
-</label>
 
 
-<input
-id="editUnit">
+    <label>
+        Openable
+    </label>
 
+    <input
+        id="editOpenable"
+        type="checkbox">
 
 
 
 
-<label>
-Minimum Quantity
-</label>
 
+    <label>
+        Unit
+    </label>
 
-<input
-id="editMinimum"
-type="number">
+    <input
+        id="editUnit"
+        type="text">
 
 
 
 
 
-<label>
-Category
-</label>
+    <label>
+        Minimum Quantity
+    </label>
 
+    <input
+        id="editMinimum"
+        type="number"
+        min="0">
 
-<select id="editCategory">
 
-<option value="">
-No category
-</option>
 
-</select>
 
 
+    <label>
+        Category
+    </label>
 
+    <select id="editCategory">
 
+        <option value="">
+            No category
+        </option>
 
-<label>
-Location
-</label>
+    </select>
 
 
-<select id="editLocation">
 
-<option value="">
-No location
-</option>
 
-</select>
 
 
+    <label>
+        Location
+    </label>
 
+    <select id="editLocation">
 
+        <option value="">
+            No location
+        </option>
 
-<label>
-Openable
-</label>
+    </select>
 
 
-<input
-id="editOpenable"
-type="checkbox">
 
 
 
+    <br><br>
 
 
-<div
-id="editOpenFields"
-style="display:none;">
+    <button onclick="saveEdit()">
+        Save Changes
+    </button>
 
 
-<label>
-Unopened Quantity
-</label>
 
-
-<input
-id="editUnopened"
-type="number">
-
-
-
-
-
-<label>
-Opened Quantity
-</label>
-
-
-<input
-id="editOpened"
-type="number">
+    <button onclick="cancelEdit()">
+        Cancel
+    </button>
 
 
 </div>
-
-
-
-
-
-
-<br>
-
-
-<button onclick="saveEdit()">
-
-Save Changes
-
-</button>
-
-
-
-<button onclick="cancelEdit()">
-
-Cancel
-
-</button>
-
-
-
-</div>
-
-
-</div>
-
 
 
 
