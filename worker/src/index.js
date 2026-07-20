@@ -231,6 +231,28 @@ app.delete("/items/:id", async(c)=>{
 
 });
 
+app.get("/debug", async (c) => {
+  try {
+    const db = c.env.DB;
+
+    const result = await db.prepare(
+      "SELECT COUNT(*) AS total FROM items"
+    ).first();
+
+    return c.json({
+      success: true,
+      result
+    });
+
+  } catch (err) {
+    return c.json({
+      success: false,
+      error: err.message,
+      stack: err.stack
+    }, 500);
+  }
+});
+
 
 
 export default app;
