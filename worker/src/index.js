@@ -100,6 +100,61 @@ app.get("/items", async (c) => {
     return c.json(items.results);
 });
 
+app.post("/items", async (c) => {
+  try {
+    const db = c.env.DB;
+    const item = await c.req.json();
+
+    await db.prepare(`
+      INSERT INTO items (
+        name,
+        category_id,
+        location_id,
+        quantity,
+        unit,
+        minimum_quantity,
+        notes,
+        expiry_date
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `)
+    .bind(
+      item.name,
+      item.category_id ?? null,
+      item.location_id ?? null,
+      item.quantity ?? 0,
+      item.unit ?? "unit",
+      item.minimum_quantity ?? 0,
+      item.notes ?? "",
+      item.expiry_date ?? null
+    )
+    .run();
+
+    await db.prepare(`
+      INSERT INTO activity_log (
+        action,
+        details
+      )
+      VALUES (?, ?)
+    `)
+    .bind(
+      "Added item",
+      item.name
+    )
+    .run();
+
+    return c.json({
+      success: true
+    });
+
+  } catch (err) {
+    return c.json({
+      success: false,
+      error: err.message
+    }, 500);
+  }
+});
+
 app.delete("/items/:id", async(c)=>{
 
     const db=c.env.DB;
