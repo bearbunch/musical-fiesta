@@ -3,9 +3,9 @@
 // ===============================
 
 
-// CHANGE THIS TO YOUR WORKER URL
-
 const API = "https://musical-fiesta.woodwardjake13.workers.dev";
+
+let items = [];
 
 
 // ===============================
@@ -20,15 +20,14 @@ async function loadDashboard(){
             API + "/items"
         );
 
-        const items = await response.json();
+        const data = await response.json();
 
-
-        let total = items.length;
+        let total = data.length;
 
         let lowStock = 0;
 
 
-        items.forEach(item=>{
+        data.forEach(item => {
 
             if(
                 item.minimum_quantity > 0 &&
@@ -75,25 +74,22 @@ async function loadDashboard(){
 // Load Inventory
 // ===============================
 
-
 async function loadItems(){
-
 
     try {
 
-
         const response =
-            await fetch(API+"/items");
+            await fetch(API + "/items");
 
 
-        const items =
+        items =
             await response.json();
 
 
-        let html="";
+        let html = "";
 
 
-        if(items.length===0){
+        if(items.length === 0){
 
             html =
             "<p>No items found</p>";
@@ -101,60 +97,52 @@ async function loadItems(){
         }
 
 
-        items.forEach(item=>{
+        items.forEach(item => {
 
 
             html += `
 
             <div class="item">
 
-            <b>
-            ${item.name}
-            </b>
+                <b>
+                ${item.name}
+                </b>
 
-            <br>
+                <br>
 
-
-            Quantity:
-
-            ${item.quantity}
-            ${item.unit}
+                Quantity:
+                ${item.quantity}
+                ${item.unit}
 
 
-            <br>
+                <br>
+
+                Location:
+                ${item.location || "None"}
 
 
-            Location:
+                <br><br>
 
-            ${item.location || "None"}
-
-
-            <br>
+                Category:
+                ${item.category || "None"}
 
 
-            Category:
-
-            ${item.category || "None"}
+                <br><br>
 
 
-            <br>
+                <button onclick="removeOne(${item.id})">
+                    Remove one
+                </button>
 
 
-            <button onclick="removeOne(${item.id})">
-              -1
-            </button>
-
-
-            <br>
-            <br>
-
-
-            <button onclick="deleteItem(${item.id})">
-            Delete
-            </button>
+                <button onclick="deleteItem(${item.id})">
+                    Delete
+                </button>
 
 
             </div>
+
+            <br>
 
             `;
 
@@ -162,19 +150,15 @@ async function loadItems(){
         });
 
 
-
-        document.getElementById("items")
-        .innerHTML=html;
+        document.getElementById("items").innerHTML = html;
 
 
     }
-
     catch(error){
 
         console.log(error);
 
     }
-
 
 }
 
@@ -183,7 +167,6 @@ async function loadItems(){
 // ===============================
 // Add Item
 // ===============================
-
 
 async function addItem(){
 
@@ -197,7 +180,7 @@ async function addItem(){
 
         quantity:
         Number(
-        document.getElementById("quantity").value
+            document.getElementById("quantity").value
         ),
 
 
@@ -207,12 +190,11 @@ async function addItem(){
 
         minimum_quantity:
         Number(
-        document.getElementById("minimum").value
+            document.getElementById("minimum").value
         ),
 
 
         notes:""
-
 
     };
 
@@ -221,7 +203,7 @@ async function addItem(){
     if(!item.name){
 
         alert(
-        "Please enter item name"
+            "Please enter item name"
         );
 
         return;
@@ -232,20 +214,16 @@ async function addItem(){
 
     await fetch(
 
-        API+"/items",
+        API + "/items",
 
         {
 
             method:"POST",
 
-
             headers:{
-
                 "Content-Type":
                 "application/json"
-
             },
-
 
             body:
             JSON.stringify(item)
@@ -266,6 +244,92 @@ async function addItem(){
 
     await loadDashboard();
 
+}
+
+
+
+// ===============================
+// Remove One Quantity
+// ===============================
+
+async function removeOne(id){
+
+
+    const item =
+        items.find(i => i.id == id);
+
+
+
+    if(!item){
+
+        console.log(
+            "Item not found",
+            id
+        );
+
+        return;
+
+    }
+
+
+
+    const newQuantity =
+        item.quantity - 1;
+
+
+
+    if(newQuantity <= 0){
+
+
+        await fetch(
+
+            API + "/items/" + id,
+
+            {
+                method:"DELETE"
+            }
+
+        );
+
+
+    }
+    else {
+
+
+        await fetch(
+
+            API + "/items/" + id,
+
+            {
+
+                method:"PUT",
+
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                JSON.stringify({
+
+                    quantity:
+                    newQuantity
+
+                })
+
+            }
+
+        );
+
+
+    }
+
+
+
+    await loadItems();
+
+    await loadDashboard();
+
 
 }
 
@@ -275,13 +339,12 @@ async function addItem(){
 // Delete Item
 // ===============================
 
-
 async function deleteItem(id){
 
 
     if(
         !confirm(
-        "Delete this item?"
+            "Delete this item?"
         )
     ){
 
@@ -293,7 +356,7 @@ async function deleteItem(id){
 
     await fetch(
 
-        API+"/items/"+id,
+        API + "/items/" + id,
 
         {
 
@@ -304,9 +367,10 @@ async function deleteItem(id){
     );
 
 
-    loadItems();
 
-    loadDashboard();
+    await loadItems();
+
+    await loadDashboard();
 
 
 }
@@ -317,68 +381,40 @@ async function deleteItem(id){
 // Load Settings
 // ===============================
 
-
 async function loadSettings(){
-
 
     try {
 
 
         const response =
-        await fetch(
-        API+"/settings"
-        );
+            await fetch(
+                API + "/settings"
+            );
 
 
         const settings =
-        await response.json();
+            await response.json();
 
 
-        window.settings=settings;
+
+        window.settings =
+            settings;
+
 
 
         console.log(
-        "Settings:",
-        settings
+            "Settings:",
+            settings
         );
 
 
     }
-
     catch(error){
 
         console.log(error);
 
     }
 
-
-}
-
-async function removeOne(id) {
-
-    const item = items.find(i => i.id === id);
-
-    if (!item) return;
-
-    const newQuantity = item.quantity - 1;
-
-    if (newQuantity <= 0) {
-        await fetch(`${API}/items/${id}`, {
-            method: "DELETE"
-        });
-    } else {
-        await fetch(`${API}/items/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                quantity: newQuantity
-            })
-        });
-    }
-
-    loadItems();
 }
 
 
@@ -387,25 +423,26 @@ async function removeOne(id) {
 // Start App
 // ===============================
 
-
 async function start(){
-
 
     await loadSettings();
 
-
     await loadItems();
 
-
     await loadDashboard();
-
 
 }
 
 
-
 start();
 
+
+// Auto refresh every second
+
 setInterval(() => {
+
     loadItems();
+
+    loadDashboard();
+
 }, 1000);
