@@ -81,34 +81,70 @@ app.put("/settings/:key", async (c)=>{
 // ITEMS
 
 
-app.get("/items", async(c)=>{
+app.post("/items", async (c) => {
+    try {
 
-    const db=c.env.DB;
+        const db = c.env.DB;
 
-    const items=await db
-        .prepare(
-            `
-            SELECT 
-            items.*,
-            categories.name AS category,
-            locations.name AS location
+        const item = await c.req.json();
 
-            FROM items
-
-            LEFT JOIN categories
-            ON categories.id=items.category_id
-
-            LEFT JOIN locations
-            ON locations.id=items.location_id
-
-            ORDER BY items.created_at DESC
-            `
+        const result = await db.prepare(`
+            INSERT INTO items (
+                name,
+                category_id,
+                location_id,
+                quantity,
+                unit,
+                minimum_quantity,
+                notes,
+                expiry_date
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `)
+        .bind(
+            item.name,
+            item.category_id ?? null,
+            item.location_id ?? null,
+            item.quantity ?? 0,
+            item.unit ?? "unit",
+            item.minimum_quantity ?? 0,
+            item.notes ?? "",
+            item.expiry_date ?? null
         )
-        .all();
+        .run();
 
+        await db.prepare(`
+            INSERT INTO activity_log (
+                action,
+                details
+            )
+            VALUES (?, ?)
+        `)
+        .bind(
+            "Added item",
+            item.name
+        )
+        .run();
 
-    return c.json(items.results);
+        return c.json({
+            success: true,
+            result
+        });
 
+    } catch (err) {
+
+        console.error(err);
+
+        return c.json(
+            {
+                success: false,
+                error: err.message,
+                stack: err.stack
+            },
+            500
+        );
+
+    }
 });
 
 
