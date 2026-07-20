@@ -1634,6 +1634,79 @@ start();
 
 
 
+let editOpenable = false;
+
+
+function toggleEditOpenable(){
+
+
+    editOpenable = !editOpenable;
+
+
+    const button =
+    document.getElementById("editOpenableButton");
+
+
+    const normal =
+    document.getElementById("editNormalQuantity");
+
+
+    const open =
+    document.getElementById("editOpenQuantityFields");
+
+
+
+    if(!button)
+    return;
+
+
+
+    if(editOpenable){
+
+
+        button.textContent =
+        "Openable: ON";
+
+
+        button.classList.add("active");
+
+
+
+        if(normal)
+        normal.style.display="none";
+
+
+
+        if(open)
+        open.style.display="block";
+
+
+    }
+    else{
+
+
+        button.textContent =
+        "Openable: OFF";
+
+
+        button.classList.remove("active");
+
+
+
+        if(normal)
+        normal.style.display="block";
+
+
+
+        if(open)
+        open.style.display="none";
+
+
+    }
+
+
+}
+
 
 
 
