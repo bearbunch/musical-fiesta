@@ -5,7 +5,7 @@
 
 // CHANGE THIS TO YOUR WORKER URL
 
-const API = "musical-fiesta.woodwardjake13.workers.dev";
+const API = "https://musical-fiesta.woodwardjake13.workers.dev";
 
 
 // ===============================
