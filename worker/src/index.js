@@ -157,26 +157,26 @@ app.get("/items", async(c)=>{
 
     SELECT
 
-    item.*,
+    items.*,
 
     categories.name AS category,
 
     locations.name AS location
 
 
-    FROM item
+    FROM items
 
 
     LEFT JOIN categories
 
     ON categories.id =
-    item.category_id
+    items.category_id
 
 
     LEFT JOIN locations
 
     ON locations.id =
-    item.location_id
+    items.location_id
 
 
     ORDER BY created_at DESC
@@ -219,7 +219,7 @@ try{
 
     await db.prepare(`
 
-    INSERT INTO item
+    INSERT INTO items
 
     (
 
@@ -348,7 +348,7 @@ try{
     await db.prepare(`
 
 
-    UPDATE item
+    UPDATE items
 
     SET
 
@@ -472,7 +472,7 @@ app.delete("/items/:id", async(c)=>{
 
     await db.prepare(
 
-        "DELETE FROM item WHERE id=?"
+        "DELETE FROM items WHERE id=?"
 
     )
 
@@ -583,7 +583,7 @@ app.get("/debug", async(c)=>{
     const result =
     await db.prepare(
 
-        "SELECT COUNT(*) AS total FROM item"
+        "SELECT COUNT(*) AS total FROM items"
 
     ).first();
 
